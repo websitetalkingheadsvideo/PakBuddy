@@ -405,26 +405,12 @@ const Hero = () => {
                     {/* Right: 16:9 Vimeo */}
                     <div className="lg:col-span-6 relative">
                         <Reveal delay={200}>
-                            <div className="mb-6 lg:mb-8 flex items-center justify-center lg:justify-end gap-5">
-                                <img
-                                    src={PAK_BUDDY_TEXT_LOGO}
-                                    alt="Pak Buddy"
-                                    className="w-40 sm:w-52 lg:w-64 h-auto object-contain drop-shadow-[0_0_30px_rgba(69,164,255,0.35)]"
-                                    data-testid="hero-mascot-logo"
-                                />
-                                <div className="hidden sm:block text-left">
-                                    <div className="eyebrow mb-2">
-                                        Meet your buddy
-                                    </div>
-                                    <p className="font-display-italic text-2xl lg:text-3xl text-white leading-tight max-w-[280px]">
-                                        Tough jobs.{" "}
-                                        <span className="text-[var(--pb-blue-bright)]">
-                                            Clean
-                                        </span>{" "}
-                                        solutions.
-                                    </p>
-                                </div>
-                            </div>
+                            <img
+                                src={PAK_BUDDY_TEXT_LOGO}
+                                alt="Pak Buddy"
+                                className="block w-full h-auto object-contain mb-4 lg:mb-6 drop-shadow-[0_0_30px_rgba(69,164,255,0.35)]"
+                                data-testid="hero-mascot-logo"
+                            />
                         </Reveal>
                         <Reveal delay={300}>
                             <div className="relative">
