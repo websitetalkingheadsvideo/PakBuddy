@@ -405,12 +405,22 @@ const Hero = () => {
                     {/* Right: 16:9 Vimeo */}
                     <div className="lg:col-span-6 relative">
                         <Reveal delay={200}>
-                            <img
-                                src={PAK_BUDDY_TEXT_LOGO}
-                                alt="Pak Buddy"
-                                className="block w-full h-auto object-contain mb-4 lg:mb-6 drop-shadow-[0_0_30px_rgba(69,164,255,0.35)]"
-                                data-testid="hero-mascot-logo"
-                            />
+                            <div
+                                className="relative w-full overflow-hidden mb-2 lg:mb-3 -ml-4 lg:-ml-8"
+                                style={{ height: "150px" }}
+                                data-testid="hero-mascot-logo-wrap"
+                            >
+                                <img
+                                    src={PAK_BUDDY_TEXT_LOGO}
+                                    alt="Pak Buddy"
+                                    className="absolute top-1/2 left-0 w-auto drop-shadow-[0_0_24px_rgba(69,164,255,0.35)]"
+                                    style={{
+                                        height: "560px",
+                                        transform: "translateY(-50%)",
+                                    }}
+                                    data-testid="hero-mascot-logo"
+                                />
+                            </div>
                         </Reveal>
                         <Reveal delay={300}>
                             <div className="relative">
