@@ -1,50 +1,72 @@
 import { useEffect, useRef, useState } from "react";
 import "@/App.css";
+import axios from "axios";
 import {
     ArrowRight,
     Play,
     Zap,
     Shield,
     DollarSign,
-    Leaf,
     Wind,
     AlertTriangle,
     CheckCircle2,
     Wrench,
     TrendingDown,
+    Menu,
+    X,
+    Send,
+    Truck,
 } from "lucide-react";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
+import { toast, Toaster } from "sonner";
 
 const STORE_URL = "https://thefloorlord.com/product/pak-buddy/";
 const VIMEO_ID = "1187115103";
 const VIMEO_HASH = "5f13bd3cbe";
 const TWO_CHAMBER_VIDEO =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/01x8i0a9_2ChamberVertical.webm";
+const API = process.env.REACT_APP_BACKEND_URL
+    ? `${process.env.REACT_APP_BACKEND_URL}/api`
+    : "/api";
 
-const PAK_BUDDY_LOGO =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/60cur2nl_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2005_26_40%20PM.png";
+/* ---------- ASSET URLS (correctly mapped) ---------- */
+const PAK_BUDDY_TEXT_LOGO =
+    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/aww064kz_pak_buddy_textonly.png";
 const FLOOR_LORD_LOGO =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/94ryg16v_Floor%20Lord%20Logo.png";
-const PAK_BUDDY_HERO =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/lxr5c9ji_PakBuddy-01.png";
-const CONTRACTOR_1 =
+const PRODUCT_RENDER =
+    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/d1z6kiiu_image.png";
+// Man walking with backpack vacuum on construction site
+const CONTRACTOR_WALKING =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/mykss7pm_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_23_57%20PM.png";
-const CONTRACTOR_2 =
+// Man kneeling next to ProTeam Super Coach Pro 10 (paint splatter site)
+const CONTRACTOR_KNEELING =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/ct14px3q_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_29_13%20PM.png";
-const SMOKING_VAC =
+// Frustrated kneeling on dusty floor
+const CONTRACTOR_FRUSTRATED =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/x5fd4whr_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_35_40%20PM.png";
-const WOMAN_HOLDING =
+// Pak Buddy bag on floor next to vacuum
+const BAG_ON_FLOOR =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/oktsl3xt_1-1.jpg";
+// Bag interior top view
 const BAG_TOP_VIEW =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/8d6uo9uj_2-1.jpg";
-const BAG_SIDE_BY_SIDE =
+// SMOKING VACUUM on construction site (correct image for cost section)
+const SMOKING_VAC =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/myrts1fu_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_59_20%20PM.png";
-const CONTRACTOR_FRUSTRATED =
+// Man on dusty floor questioning gesture
+const CONTRACTOR_QUESTIONING =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/kts01vet_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2005_15_11%20PM.png";
-const PAK_BUDDY_POSTER =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/nr69g1v5_image.png";
+// Angelica smiling, holding Pak Buddy with backpack vacuum on
+const ANGELICA_HOLDING_PAK_BUDDY =
+    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/6ribw31r_Angelica%20with%20muk%20budddy.jpg";
 
-/* ---------- Small helpers ---------- */
-
+/* ---------- Helpers ---------- */
 const useReveal = () => {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -83,15 +105,22 @@ const Reveal = ({ children, delay = 0, className = "" }) => {
     );
 };
 
-const CTAButton = ({ children = "Get Pak Buddy", variant = "primary", testId }) => {
+const CTAButton = ({
+    children = "Get Pak Buddy",
+    variant = "primary",
+    testId,
+    href = STORE_URL,
+    onClick,
+}) => {
     if (variant === "ghost") {
         return (
             <a
-                href={STORE_URL}
-                target="_blank"
+                href={href}
+                target={href.startsWith("http") ? "_blank" : undefined}
                 rel="noopener noreferrer"
                 className="pb-btn-ghost"
                 data-testid={testId}
+                onClick={onClick}
             >
                 {children}
                 <ArrowRight className="w-4 h-4" />
@@ -100,11 +129,12 @@ const CTAButton = ({ children = "Get Pak Buddy", variant = "primary", testId }) 
     }
     return (
         <a
-            href={STORE_URL}
-            target="_blank"
+            href={href}
+            target={href.startsWith("http") ? "_blank" : undefined}
             rel="noopener noreferrer"
             className="pb-btn"
             data-testid={testId}
+            onClick={onClick}
         >
             <span>{children}</span>
             <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
@@ -113,126 +143,210 @@ const CTAButton = ({ children = "Get Pak Buddy", variant = "primary", testId }) 
 };
 
 /* ---------- NAV ---------- */
-
 const Nav = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [open, setOpen] = useState(false);
+
     useEffect(() => {
         const on = () => setScrolled(window.scrollY > 30);
         window.addEventListener("scroll", on, { passive: true });
         return () => window.removeEventListener("scroll", on);
     }, []);
+
+    useEffect(() => {
+        if (open) document.body.style.overflow = "hidden";
+        else document.body.style.overflow = "";
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [open]);
+
+    const navLinks = [
+        { href: "#cost", label: "The Cost" },
+        { href: "#how", label: "How It Works" },
+        { href: "#benefits", label: "Benefits" },
+        { href: "#testimonials", label: "Reviews" },
+        { href: "#faq", label: "FAQ" },
+        { href: "#fleet", label: "Fleet" },
+    ];
+
     return (
-        <nav
-            data-testid="main-nav"
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-                scrolled
-                    ? "bg-[rgba(7,16,31,0.85)] backdrop-blur-xl border-b border-white/5"
-                    : "bg-transparent"
-            }`}
-        >
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
-                <a
-                    href="#top"
-                    className="flex items-center gap-3"
-                    data-testid="nav-logo"
-                >
-                    <img
-                        src={FLOOR_LORD_LOGO}
-                        alt="Floor Lord Industries"
-                        className="h-11 w-11 object-contain"
-                    />
-                    <div className="flex flex-col leading-none">
-                        <span className="font-block text-lg tracking-tight">
-                            PAK BUDDY
+        <>
+            <nav
+                data-testid="main-nav"
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                    scrolled || open
+                        ? "bg-[rgba(7,16,31,0.92)] backdrop-blur-xl border-b border-white/5"
+                        : "bg-transparent"
+                }`}
+            >
+                <div className="max-w-[1440px] mx-auto px-5 lg:px-12 py-3 lg:py-4 flex items-center justify-between">
+                    <a
+                        href="#top"
+                        className="flex items-center gap-3 group"
+                        data-testid="nav-logo"
+                    >
+                        <img
+                            src={PAK_BUDDY_TEXT_LOGO}
+                            alt="Pak Buddy"
+                            className="h-9 lg:h-11 w-auto object-contain transition-transform group-hover:scale-105"
+                        />
+                        <span className="hidden sm:inline-block font-mono text-[10px] text-[var(--pb-blue-bright)] tracking-[0.25em] uppercase border-l border-white/15 pl-3">
+                            By Floor Lord
                         </span>
-                        <span className="font-mono text-[10px] text-[var(--pb-blue-bright)] tracking-widest mt-0.5">
-                            BY FLOOR LORD
-                        </span>
+                    </a>
+
+                    <div className="hidden lg:flex items-center gap-7 font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--pb-grey)]">
+                        {navLinks.map((l) => (
+                            <a
+                                key={l.href}
+                                href={l.href}
+                                className="hover:text-[var(--pb-blue-bright)] transition"
+                                data-testid={`nav-${l.label.toLowerCase().replace(/\s/g, "-")}`}
+                            >
+                                {l.label}
+                            </a>
+                        ))}
                     </div>
-                </a>
-                <div className="hidden md:flex items-center gap-8 font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--pb-grey)]">
-                    <a
-                        href="#cost"
-                        className="hover:text-[var(--pb-blue-bright)] transition"
-                        data-testid="nav-cost"
+
+                    <div className="hidden md:block">
+                        <CTAButton testId="nav-cta">Get Pak Buddy</CTAButton>
+                    </div>
+
+                    <button
+                        className="md:hidden p-2 text-white"
+                        onClick={() => setOpen(!open)}
+                        aria-label="Toggle menu"
+                        data-testid="mobile-menu-toggle"
                     >
-                        The Cost
-                    </a>
-                    <a
-                        href="#how"
-                        className="hover:text-[var(--pb-blue-bright)] transition"
-                        data-testid="nav-how"
-                    >
-                        How It Works
-                    </a>
-                    <a
-                        href="#benefits"
-                        className="hover:text-[var(--pb-blue-bright)] transition"
-                        data-testid="nav-benefits"
-                    >
-                        Benefits
-                    </a>
-                    <a
-                        href="#testimonials"
-                        className="hover:text-[var(--pb-blue-bright)] transition"
-                        data-testid="nav-testimonials"
-                    >
-                        Reviews
-                    </a>
+                        {open ? (
+                            <X className="w-6 h-6" />
+                        ) : (
+                            <Menu className="w-6 h-6" />
+                        )}
+                    </button>
                 </div>
-                <CTAButton testId="nav-cta">Get Pak Buddy</CTAButton>
+            </nav>
+
+            {/* Mobile drawer */}
+            <div
+                className={`fixed inset-0 z-40 md:hidden transition-opacity duration-300 ${
+                    open
+                        ? "opacity-100 pointer-events-auto"
+                        : "opacity-0 pointer-events-none"
+                }`}
+                data-testid="mobile-drawer"
+            >
+                <div
+                    className="absolute inset-0 bg-[rgba(7,16,31,0.96)] backdrop-blur-xl"
+                    onClick={() => setOpen(false)}
+                />
+                <div className="relative h-full pt-24 px-6 flex flex-col">
+                    <div className="space-y-6">
+                        {navLinks.map((l, i) => (
+                            <a
+                                key={l.href}
+                                href={l.href}
+                                onClick={() => setOpen(false)}
+                                className="block font-display text-4xl text-white border-b border-white/10 pb-4 hover:text-[var(--pb-blue-bright)] transition"
+                                data-testid={`mobile-nav-${l.label.toLowerCase().replace(/\s/g, "-")}`}
+                                style={{
+                                    transitionDelay: `${i * 50}ms`,
+                                }}
+                            >
+                                {l.label}
+                            </a>
+                        ))}
+                    </div>
+                    <div className="mt-10">
+                        <CTAButton testId="mobile-nav-cta">
+                            Get Pak Buddy
+                        </CTAButton>
+                    </div>
+                </div>
             </div>
-        </nav>
+        </>
+    );
+};
+
+/* ---------- STICKY MOBILE CTA ---------- */
+const StickyMobileCTA = () => {
+    const [show, setShow] = useState(false);
+    useEffect(() => {
+        const on = () => setShow(window.scrollY > 700);
+        window.addEventListener("scroll", on, { passive: true });
+        return () => window.removeEventListener("scroll", on);
+    }, []);
+    return (
+        <div
+            className={`md:hidden fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 pt-3 bg-gradient-to-t from-[var(--pb-ink)] via-[var(--pb-ink)]/95 to-transparent transition-transform duration-400 ${
+                show ? "translate-y-0" : "translate-y-full"
+            }`}
+            data-testid="sticky-mobile-cta"
+        >
+            <a
+                href={STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full bg-[var(--pb-blue)] text-[var(--pb-ink)] font-block uppercase tracking-wider py-4 text-sm border-2 border-[var(--pb-ink)] shadow-[4px_4px_0_0_var(--pb-blue-bright)]"
+                data-testid="sticky-cta-link"
+            >
+                Get Pak Buddy
+                <ArrowRight className="w-4 h-4" strokeWidth={3} />
+            </a>
+        </div>
     );
 };
 
 /* ---------- HERO ---------- */
-
 const Hero = () => {
     return (
         <section
             id="top"
             data-testid="hero-section"
-            className="relative pt-36 pb-20 lg:pt-44 lg:pb-28 overflow-hidden grain blueprint-grid"
+            className="relative pt-28 pb-16 lg:pt-40 lg:pb-28 overflow-hidden grain blueprint-grid"
         >
-            {/* Deco blobs */}
             <div className="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full bg-[var(--pb-blue-deep)] opacity-25 blur-[120px] pointer-events-none" />
             <div className="absolute top-40 right-0 w-[380px] h-[380px] rounded-full bg-[var(--pb-blue)] opacity-15 blur-[110px] pointer-events-none" />
 
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12 relative">
                 <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-                    {/* LEFT: copy */}
                     <div className="lg:col-span-6 relative z-10">
                         <Reveal>
-                            <span className="eyebrow" data-testid="hero-eyebrow">
-                                For commercial backpack vacuums
+                            <span
+                                className="eyebrow"
+                                data-testid="hero-eyebrow"
+                            >
+                                Introducing Pak Buddy™ · For commercial backpack vacuums
                             </span>
                         </Reveal>
                         <Reveal delay={120}>
                             <h1
-                                className="font-display mt-6 text-5xl sm:text-6xl lg:text-7xl xl:text-[92px] text-white"
+                                className="font-display mt-6 text-[44px] sm:text-6xl lg:text-7xl xl:text-[88px] text-white"
                                 data-testid="hero-headline"
                             >
                                 Finally — a{" "}
                                 <span className="font-display-italic text-[var(--pb-blue-bright)]">
                                     reusable
                                 </span>{" "}
-                                replacement for backpack disposable vacuum bags.
+                                replacement for backpack disposable vacuum
+                                bags.
                             </h1>
                         </Reveal>
                         <Reveal delay={240}>
                             <p
-                                className="mt-8 text-lg lg:text-xl text-[var(--pb-grey)] max-w-xl leading-relaxed"
+                                className="mt-6 lg:mt-8 text-lg lg:text-xl text-[var(--pb-grey)] max-w-xl leading-relaxed"
                                 data-testid="hero-subline"
                             >
-                                Save money, increase crew efficiency, and
-                                protect your equipment — one bag, endlessly
-                                reusable, engineered for real job sites.
+                                Pak Buddy saves you money, increases crew
+                                efficiency, and protects your equipment — one
+                                bag, endlessly reusable, engineered for real
+                                job sites.
                             </p>
                         </Reveal>
 
                         <Reveal delay={360}>
-                            <div className="mt-10 flex flex-wrap gap-4 items-center">
+                            <div className="mt-8 lg:mt-10 flex flex-wrap gap-4 items-center">
                                 <CTAButton testId="hero-primary-cta">
                                     Get Pak Buddy
                                 </CTAButton>
@@ -242,28 +356,30 @@ const Hero = () => {
                                     data-testid="hero-secondary-cta"
                                 >
                                     <Play className="w-4 h-4" />
-                                    See how it works
+                                    See how Pak Buddy works
                                 </a>
                             </div>
                         </Reveal>
 
                         <Reveal delay={500}>
-                            <div className="mt-12 flex items-center gap-6 flex-wrap">
+                            <div className="mt-12 flex items-center gap-5 flex-wrap">
                                 <div className="flex -space-x-3">
-                                    {[CONTRACTOR_1, WOMAN_HOLDING, CONTRACTOR_2].map(
-                                        (src, i) => (
-                                            <div
-                                                key={i}
-                                                className="w-11 h-11 rounded-full border-2 border-[var(--pb-ink)] overflow-hidden bg-[var(--pb-steel)]"
-                                            >
-                                                <img
-                                                    src={src}
-                                                    alt="Contractor"
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
-                                        )
-                                    )}
+                                    {[
+                                        ANGELICA_HOLDING_PAK_BUDDY,
+                                        CONTRACTOR_WALKING,
+                                        CONTRACTOR_KNEELING,
+                                    ].map((src, i) => (
+                                        <div
+                                            key={i}
+                                            className="w-11 h-11 rounded-full border-2 border-[var(--pb-ink)] overflow-hidden bg-[var(--pb-steel)]"
+                                        >
+                                            <img
+                                                src={src}
+                                                alt="Pak Buddy user"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                                 <div>
                                     <div className="font-block text-sm text-white">
@@ -277,21 +393,20 @@ const Hero = () => {
                         </Reveal>
                     </div>
 
-                    {/* RIGHT: video */}
+                    {/* Right: 16:9 Vimeo */}
                     <div className="lg:col-span-6 relative">
                         <Reveal delay={300}>
                             <div className="relative">
-                                {/* Frame */}
                                 <div className="absolute -inset-3 border border-[var(--pb-blue-bright)]/30 rounded-sm pointer-events-none" />
-                                <div className="absolute -top-6 -left-6 font-mono text-[10px] tracking-[0.3em] text-[var(--pb-blue-bright)] uppercase">
-                                    ◢ 01 / Sales film
+                                <div className="absolute -top-6 left-0 font-mono text-[10px] tracking-[0.3em] text-[var(--pb-blue-bright)] uppercase">
+                                    ◢ 01 / Pak Buddy sales film
                                 </div>
-                                <div className="absolute -bottom-6 -right-6 font-mono text-[10px] tracking-[0.3em] text-[var(--pb-blue-bright)] uppercase">
+                                <div className="absolute -bottom-6 right-0 font-mono text-[10px] tracking-[0.3em] text-[var(--pb-blue-bright)] uppercase">
                                     Pak Buddy™ ◣
                                 </div>
 
                                 <div
-                                    className="relative aspect-[9/16] lg:aspect-[4/5] w-full overflow-hidden bg-black rounded-sm border border-white/10"
+                                    className="relative aspect-video w-full overflow-hidden bg-black rounded-sm border border-white/10"
                                     data-testid="hero-video-wrapper"
                                 >
                                     <iframe
@@ -303,11 +418,32 @@ const Hero = () => {
                                     />
                                 </div>
 
-                                {/* Corner brackets */}
                                 <span className="absolute -top-1 -left-1 w-5 h-5 border-t-2 border-l-2 border-[var(--pb-blue-bright)]" />
                                 <span className="absolute -top-1 -right-1 w-5 h-5 border-t-2 border-r-2 border-[var(--pb-blue-bright)]" />
                                 <span className="absolute -bottom-1 -left-1 w-5 h-5 border-b-2 border-l-2 border-[var(--pb-blue-bright)]" />
                                 <span className="absolute -bottom-1 -right-1 w-5 h-5 border-b-2 border-r-2 border-[var(--pb-blue-bright)]" />
+                            </div>
+                        </Reveal>
+
+                        <Reveal delay={500}>
+                            <div className="mt-10 grid grid-cols-3 gap-2 lg:gap-3">
+                                {[
+                                    { k: "Reusable", v: "endlessly" },
+                                    { k: "Patented", v: "2-chamber" },
+                                    { k: "Saves", v: "$100s" },
+                                ].map((s, i) => (
+                                    <div
+                                        key={i}
+                                        className="p-3 lg:p-4 border border-white/10 bg-white/[0.02]"
+                                    >
+                                        <div className="font-display text-2xl lg:text-3xl text-[var(--pb-blue-bright)] leading-none">
+                                            {s.v}
+                                        </div>
+                                        <div className="mt-2 font-mono text-[10px] tracking-[0.2em] text-[var(--pb-grey)] uppercase">
+                                            {s.k}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </Reveal>
                     </div>
@@ -317,29 +453,28 @@ const Hero = () => {
     );
 };
 
-/* ---------- MARQUEE TESTIMONIALS ---------- */
-
+/* ---------- MICRO PROOF ---------- */
 const MicroProof = () => {
     const quotes = [
         "It feels like a completely different machine.",
         "The suction boost is insane — it sticks to the floor.",
-        "Guys are finishing jobs faster because it doesn't lose power.",
+        "Guys are finishing jobs faster because Pak Buddy doesn't lose power.",
         "We are saving hundreds of dollars with Pak Buddy.",
     ];
     const doubled = [...quotes, ...quotes, ...quotes];
     return (
         <section
-            className="relative py-10 border-y border-white/10 bg-[var(--pb-ink-2)]"
+            className="relative py-8 lg:py-10 border-y border-white/10 bg-[var(--pb-ink-2)]"
             data-testid="proof-marquee"
         >
             <div className="overflow-hidden">
-                <div className="marquee-track flex gap-16 whitespace-nowrap w-[300%]">
+                <div className="marquee-track flex gap-12 lg:gap-16 whitespace-nowrap w-[300%]">
                     {doubled.map((q, i) => (
                         <div
                             key={i}
                             className="flex items-center gap-4 shrink-0"
                         >
-                            <span className="font-display-italic text-2xl lg:text-3xl text-white">
+                            <span className="font-display-italic text-xl lg:text-3xl text-white">
                                 &ldquo;{q}&rdquo;
                             </span>
                             <span className="w-2 h-2 bg-[var(--pb-blue-bright)] rounded-full" />
@@ -352,7 +487,6 @@ const MicroProof = () => {
 };
 
 /* ---------- COST SECTION ---------- */
-
 const CostSection = () => {
     const costs = [
         {
@@ -386,16 +520,16 @@ const CostSection = () => {
         <section
             id="cost"
             data-testid="cost-section"
-            className="relative py-24 lg:py-36 bg-[var(--pb-ink)] overflow-hidden"
+            className="relative py-20 lg:py-36 bg-[var(--pb-ink)] overflow-hidden"
         >
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
-                <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12">
+                <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-start">
                     <div className="lg:col-span-5 lg:sticky lg:top-28">
                         <Reveal>
                             <span className="eyebrow">§ 02 — The Cost</span>
                         </Reveal>
                         <Reveal delay={120}>
-                            <h2 className="font-display mt-6 text-5xl lg:text-6xl xl:text-7xl text-white">
+                            <h2 className="font-display mt-6 text-[40px] sm:text-5xl lg:text-6xl xl:text-7xl text-white leading-[0.95]">
                                 Still using{" "}
                                 <span className="font-display-italic text-[var(--pb-blue-bright)]">
                                     disposable
@@ -404,22 +538,26 @@ const CostSection = () => {
                             </h2>
                         </Reveal>
                         <Reveal delay={240}>
-                            <p className="mt-6 text-xl text-[var(--pb-grey)] max-w-md leading-relaxed">
+                            <p className="mt-6 text-lg lg:text-xl text-[var(--pb-grey)] max-w-md leading-relaxed">
                                 Here's what it's really costing you — every
-                                week, every crew, every machine.
+                                week, every crew, every machine. Pak Buddy
+                                fixes all of it.
                             </p>
                         </Reveal>
                         <Reveal delay={360}>
-                            <div className="mt-10 relative w-full max-w-[380px] aspect-square">
-                                <div className="absolute inset-0 rounded-full bg-[var(--pb-blue)]/15 blur-3xl" />
+                            <div className="mt-10 relative w-full max-w-[480px] aspect-square">
+                                <div className="absolute inset-0 rounded-full bg-red-500/15 blur-3xl" />
                                 <img
                                     src={SMOKING_VAC}
-                                    alt="Overheating vacuum with smoke rising"
+                                    alt="Backpack vacuum smoking on a construction job site"
                                     className="relative w-full h-full object-cover rounded-sm border border-white/10"
                                     data-testid="cost-image"
                                 />
-                                <div className="absolute top-4 left-4 font-mono text-[10px] tracking-[0.25em] text-red-400 uppercase bg-black/60 px-2 py-1 border border-red-400/50">
-                                    ⚠ SYSTEM STRAIN
+                                <div className="absolute top-4 left-4 font-mono text-[10px] tracking-[0.25em] text-red-300 uppercase bg-black/70 px-2 py-1 border border-red-400/50">
+                                    ⚠ MOTOR FAILURE
+                                </div>
+                                <div className="absolute bottom-4 right-4 font-mono text-[10px] tracking-[0.25em] text-red-300 uppercase bg-black/70 px-2 py-1 border border-red-400/50">
+                                    NOT USING PAK BUDDY
                                 </div>
                             </div>
                         </Reveal>
@@ -430,17 +568,17 @@ const CostSection = () => {
                             {costs.map((c, i) => (
                                 <Reveal key={i} delay={i * 100}>
                                     <div
-                                        className="group flex items-start gap-6 py-7 border-b border-white/10 hover:border-[var(--pb-blue-bright)]/60 transition"
+                                        className="group flex items-start gap-4 lg:gap-6 py-6 lg:py-7 border-b border-white/10 hover:border-[var(--pb-blue-bright)]/60 transition"
                                         data-testid={`cost-item-${i}`}
                                     >
-                                        <div className="shrink-0 mt-1 font-mono text-sm text-[var(--pb-blue-bright)] w-12">
+                                        <div className="shrink-0 mt-1 font-mono text-sm text-[var(--pb-blue-bright)] w-10 lg:w-12">
                                             {String(i + 1).padStart(2, "0")}
                                         </div>
                                         <div className="shrink-0 text-[var(--pb-blue-bright)] group-hover:scale-110 transition-transform">
                                             {c.icon}
                                         </div>
                                         <div>
-                                            <h3 className="font-block text-xl lg:text-2xl text-white leading-tight">
+                                            <h3 className="font-block text-lg lg:text-2xl text-white leading-tight">
                                                 {c.title}
                                             </h3>
                                             <p className="mt-2 text-[var(--pb-grey)]">
@@ -453,14 +591,14 @@ const CostSection = () => {
                         </div>
 
                         <Reveal delay={600}>
-                            <div className="mt-12 p-8 lg:p-10 bg-gradient-to-br from-[var(--pb-ink-2)] to-[var(--pb-ink-3)] border-l-4 border-[var(--pb-blue-bright)] relative overflow-hidden">
+                            <div className="mt-10 lg:mt-12 p-7 lg:p-10 bg-gradient-to-br from-[var(--pb-ink-2)] to-[var(--pb-ink-3)] border-l-4 border-[var(--pb-blue-bright)] relative overflow-hidden">
                                 <div className="absolute -right-10 -bottom-10 font-display text-[200px] text-[var(--pb-blue)]/10 leading-none select-none">
                                     $
                                 </div>
                                 <div className="eyebrow mb-4">
                                     The bottom line
                                 </div>
-                                <p className="font-display text-3xl lg:text-4xl text-white leading-tight relative">
+                                <p className="font-display text-2xl sm:text-3xl lg:text-4xl text-white leading-tight relative">
                                     You're trying to save{" "}
                                     <span className="font-display-italic text-[var(--pb-blue-bright)]">
                                         $10
@@ -473,7 +611,7 @@ const CostSection = () => {
                                 </p>
                                 <p className="mt-6 text-lg text-[var(--pb-grey)] relative">
                                     It's not just a bag — it's a bottleneck on
-                                    your entire system.
+                                    your entire system. Pak Buddy is the fix.
                                 </p>
                             </div>
                         </Reveal>
@@ -485,7 +623,6 @@ const CostSection = () => {
 };
 
 /* ---------- HOW IT WORKS ---------- */
-
 const HowItWorks = () => {
     const points = [
         "Separates airflow from debris",
@@ -497,17 +634,19 @@ const HowItWorks = () => {
         <section
             id="how"
             data-testid="how-section"
-            className="relative py-24 lg:py-36 bg-[var(--pb-ink-2)] overflow-hidden"
+            className="relative py-20 lg:py-36 bg-[var(--pb-ink-2)] overflow-hidden"
         >
             <div className="absolute inset-0 blueprint-grid opacity-30 pointer-events-none" />
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12 relative">
                 <Reveal>
-                    <div className="text-center mb-16">
-                        <span className="eyebrow">§ 03 — Engineering</span>
-                        <h2 className="font-display mt-6 text-5xl lg:text-7xl xl:text-[88px] text-white max-w-5xl mx-auto">
-                            Maintains airflow.{" "}
+                    <div className="text-center mb-14 lg:mb-16">
+                        <span className="eyebrow inline-flex">
+                            § 03 — Pak Buddy Engineering
+                        </span>
+                        <h2 className="font-display mt-6 text-[44px] sm:text-5xl lg:text-7xl xl:text-[88px] text-white max-w-5xl mx-auto leading-[0.92]">
+                            Pak Buddy maintains airflow.{" "}
                             <span className="font-display-italic text-[var(--pb-blue-bright)]">
-                                Protects
+                                Pak Buddy protects
                             </span>{" "}
                             your vacuum.
                         </h2>
@@ -520,12 +659,11 @@ const HowItWorks = () => {
                 </Reveal>
 
                 <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-                    {/* Video */}
                     <Reveal delay={150} className="lg:col-span-5">
                         <div className="relative">
                             <div className="absolute -inset-2 border border-[var(--pb-blue-bright)]/30 pointer-events-none" />
                             <div className="absolute -top-5 left-0 font-mono text-[10px] tracking-[0.3em] text-[var(--pb-blue-bright)] uppercase">
-                                ◢ 2-chamber system · looped
+                                ◢ Pak Buddy 2-chamber · looped
                             </div>
                             <div className="relative aspect-[9/16] max-h-[640px] mx-auto w-full max-w-[420px] bg-black overflow-hidden border border-white/10">
                                 <video
@@ -545,16 +683,15 @@ const HowItWorks = () => {
                         </div>
                     </Reveal>
 
-                    {/* Copy */}
                     <div className="lg:col-span-7">
                         <Reveal delay={200}>
                             <div className="space-y-8">
-                                <div className="grid sm:grid-cols-2 gap-6">
+                                <div className="grid sm:grid-cols-2 gap-4 lg:gap-6">
                                     <div className="p-6 border border-red-400/20 bg-red-950/20 relative">
                                         <div className="eyebrow text-red-400 before:bg-red-400 mb-3">
                                             Disposable bags
                                         </div>
-                                        <p className="font-block text-xl text-white leading-tight">
+                                        <p className="font-block text-lg lg:text-xl text-white leading-tight">
                                             Clog and choke off airflow.
                                         </p>
                                         <div className="mt-4 h-1 bg-white/10 overflow-hidden">
@@ -568,7 +705,7 @@ const HowItWorks = () => {
                                         <div className="eyebrow mb-3">
                                             Pak Buddy
                                         </div>
-                                        <p className="font-block text-xl text-white leading-tight">
+                                        <p className="font-block text-lg lg:text-xl text-white leading-tight">
                                             Keeps air moving freely.
                                         </p>
                                         <div className="mt-4 h-1 bg-white/10 overflow-hidden">
@@ -580,14 +717,14 @@ const HowItWorks = () => {
                                     </div>
                                 </div>
 
-                                <p className="text-xl lg:text-2xl text-[var(--pb-cream)] leading-relaxed">
-                                    Its patented 2-chamber system separates
-                                    debris from the air path — so your vacuum
-                                    maintains consistent suction from start to
-                                    finish.
+                                <p className="text-lg lg:text-2xl text-[var(--pb-cream)] leading-relaxed">
+                                    Pak Buddy's patented 2-chamber system
+                                    separates debris from the air path — so
+                                    your vacuum maintains consistent suction
+                                    from start to finish.
                                 </p>
 
-                                <div className="grid sm:grid-cols-2 gap-4">
+                                <div className="grid sm:grid-cols-2 gap-3 lg:gap-4">
                                     {points.map((p, i) => (
                                         <div
                                             key={i}
@@ -606,17 +743,17 @@ const HowItWorks = () => {
                                     <span className="q-glyph absolute -left-2 top-0 text-8xl">
                                         &ldquo;
                                     </span>
-                                    <p className="font-display-italic text-3xl lg:text-4xl text-white leading-tight">
-                                        It feels like a completely different
-                                        machine.
+                                    <p className="font-display-italic text-2xl lg:text-4xl text-white leading-tight">
+                                        With Pak Buddy, it feels like a
+                                        completely different machine.
                                     </p>
                                     <footer className="mt-3 font-mono text-xs tracking-[0.25em] text-[var(--pb-blue-bright)] uppercase">
                                         — Working contractor
                                     </footer>
                                 </blockquote>
 
-                                <p className="font-display text-2xl text-[var(--pb-grey)] italic">
-                                    Your vacuum can finally{" "}
+                                <p className="font-display text-xl lg:text-2xl text-[var(--pb-grey)] italic">
+                                    With Pak Buddy, your vacuum can finally{" "}
                                     <span className="text-[var(--pb-blue-bright)]">
                                         breathe.
                                     </span>
@@ -631,13 +768,12 @@ const HowItWorks = () => {
 };
 
 /* ---------- BENEFITS ---------- */
-
 const Benefits = () => {
     const benefits = [
         {
             icon: <DollarSign className="w-8 h-8" />,
             num: "01",
-            tag: "Save Money",
+            tag: "Pak Buddy Saves Money",
             headline: "Stop paying for disposable bags",
             points: [
                 "$10–$20 per bag adds up fast",
@@ -645,12 +781,12 @@ const Benefits = () => {
                 "Reduce filter replacements",
                 "Lower long-term equipment expenses",
             ],
-            image: BAG_TOP_VIEW,
+            image: BAG_ON_FLOOR,
         },
         {
             icon: <Zap className="w-8 h-8" />,
             num: "02",
-            tag: "Work Faster",
+            tag: "Pak Buddy Works Faster",
             headline: "Keep your crews moving",
             points: [
                 "No loss of suction mid-job",
@@ -658,12 +794,12 @@ const Benefits = () => {
                 "Less time dealing with clogged bags",
                 "Jobs get done faster",
             ],
-            image: CONTRACTOR_2,
+            image: CONTRACTOR_WALKING,
         },
         {
             icon: <Shield className="w-8 h-8" />,
             num: "03",
-            tag: "Protect Equipment",
+            tag: "Pak Buddy Protects Equipment",
             headline: "Reduce strain. Extend lifespan.",
             points: [
                 "Maintains airflow to reduce motor strain",
@@ -671,7 +807,7 @@ const Benefits = () => {
                 "Helps extend the life of your vacuum",
                 "Protects your investment",
             ],
-            image: CONTRACTOR_1,
+            image: BAG_TOP_VIEW,
         },
     ];
 
@@ -679,14 +815,14 @@ const Benefits = () => {
         <section
             id="benefits"
             data-testid="benefits-section"
-            className="relative py-24 lg:py-36 bg-[var(--pb-ink)] overflow-hidden"
+            className="relative py-20 lg:py-36 bg-[var(--pb-ink)] overflow-hidden"
         >
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12">
                 <Reveal>
                     <div className="max-w-4xl">
-                        <span className="eyebrow">§ 04 — Benefits</span>
-                        <h2 className="font-display mt-6 text-5xl lg:text-7xl xl:text-[88px] text-white leading-[0.92]">
-                            Built for{" "}
+                        <span className="eyebrow">§ 04 — Pak Buddy Benefits</span>
+                        <h2 className="font-display mt-6 text-[44px] sm:text-5xl lg:text-7xl xl:text-[88px] text-white leading-[0.92]">
+                            Pak Buddy is built for{" "}
                             <span className="font-display-italic text-[var(--pb-blue-bright)]">
                                 real
                             </span>{" "}
@@ -695,14 +831,14 @@ const Benefits = () => {
                     </div>
                 </Reveal>
 
-                <div className="mt-16 grid md:grid-cols-3 gap-1 bg-white/10">
+                <div className="mt-12 lg:mt-16 grid md:grid-cols-3 gap-1 bg-white/10">
                     {benefits.map((b, i) => (
                         <Reveal key={i} delay={i * 150}>
                             <div
-                                className="group relative h-full bg-[var(--pb-ink-2)] p-8 lg:p-10 hover:bg-[var(--pb-ink-3)] transition-colors"
+                                className="group relative h-full bg-[var(--pb-ink-2)] p-7 lg:p-10 hover:bg-[var(--pb-ink-3)] transition-colors"
                                 data-testid={`benefit-card-${i}`}
                             >
-                                <div className="flex items-start justify-between mb-8">
+                                <div className="flex items-start justify-between mb-7 lg:mb-8">
                                     <div className="text-[var(--pb-blue-bright)] p-3 border border-[var(--pb-blue-bright)]/30 bg-[var(--pb-blue)]/10">
                                         {b.icon}
                                     </div>
@@ -711,7 +847,7 @@ const Benefits = () => {
                                     </span>
                                 </div>
                                 <div className="eyebrow mb-4">{b.tag}</div>
-                                <h3 className="font-display text-3xl lg:text-4xl text-white leading-tight">
+                                <h3 className="font-display text-2xl lg:text-4xl text-white leading-tight">
                                     {b.headline}
                                 </h3>
                                 <ul className="mt-6 space-y-3">
@@ -727,7 +863,7 @@ const Benefits = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className="mt-8 aspect-[4/3] overflow-hidden border border-white/10">
+                                <div className="mt-7 lg:mt-8 aspect-[4/3] overflow-hidden border border-white/10 bg-white">
                                     <img
                                         src={b.image}
                                         alt={b.tag}
@@ -740,7 +876,7 @@ const Benefits = () => {
                 </div>
 
                 <Reveal delay={400}>
-                    <div className="mt-20 text-center">
+                    <div className="mt-16 lg:mt-20 text-center">
                         <p className="font-display text-3xl lg:text-5xl text-white max-w-4xl mx-auto leading-tight">
                             Better performance.{" "}
                             <span className="font-display-italic text-[var(--pb-blue-bright)]">
@@ -748,7 +884,7 @@ const Benefits = () => {
                             </span>{" "}
                             Longer-lasting equipment.
                         </p>
-                        <div className="mt-10">
+                        <div className="mt-8 lg:mt-10">
                             <CTAButton testId="benefits-cta">
                                 Get Pak Buddy
                             </CTAButton>
@@ -761,7 +897,6 @@ const Benefits = () => {
 };
 
 /* ---------- TESTIMONIALS ---------- */
-
 const Testimonials = () => {
     const quotes = [
         {
@@ -773,7 +908,7 @@ const Testimonials = () => {
             role: "Cleaning crew lead",
         },
         {
-            q: "Guys are finishing jobs faster because it doesn't lose power.",
+            q: "Guys are finishing jobs faster because Pak Buddy doesn't lose power.",
             role: "Operations manager",
         },
         {
@@ -785,27 +920,27 @@ const Testimonials = () => {
         <section
             id="testimonials"
             data-testid="testimonials-section"
-            className="relative py-24 lg:py-36 bg-[var(--pb-ink-2)] overflow-hidden"
+            className="relative py-20 lg:py-36 bg-[var(--pb-ink-2)] overflow-hidden"
         >
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
-                <div className="grid lg:grid-cols-12 gap-12 items-end mb-16">
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12">
+                <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-end mb-12 lg:mb-16">
                     <div className="lg:col-span-7">
                         <Reveal>
                             <span className="eyebrow">§ 05 — Field reports</span>
                         </Reveal>
                         <Reveal delay={120}>
-                            <h2 className="font-display mt-6 text-5xl lg:text-7xl xl:text-[88px] text-white leading-[0.92]">
+                            <h2 className="font-display mt-6 text-[44px] sm:text-5xl lg:text-7xl xl:text-[88px] text-white leading-[0.92]">
                                 Contractors are already{" "}
                                 <span className="font-display-italic text-[var(--pb-blue-bright)]">
                                     making
                                 </span>{" "}
-                                the switch.
+                                the switch to Pak Buddy.
                             </h2>
                         </Reveal>
                     </div>
                     <div className="lg:col-span-5">
                         <Reveal delay={240}>
-                            <p className="text-xl text-[var(--pb-grey)] leading-relaxed">
+                            <p className="text-lg lg:text-xl text-[var(--pb-grey)] leading-relaxed">
                                 Once crews try Pak Buddy, they don't go back to
                                 disposable bags. Here's what they're saying on
                                 the job.
@@ -814,11 +949,11 @@ const Testimonials = () => {
                     </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-5 lg:gap-6">
                     {quotes.map((q, i) => (
                         <Reveal key={i} delay={i * 120}>
                             <div
-                                className="relative p-10 lg:p-12 bg-[var(--pb-ink)] border border-white/10 hover:border-[var(--pb-blue-bright)]/60 transition-colors h-full"
+                                className="relative p-8 lg:p-12 bg-[var(--pb-ink)] border border-white/10 hover:border-[var(--pb-blue-bright)]/60 transition-colors h-full"
                                 data-testid={`testimonial-${i}`}
                             >
                                 <span className="q-glyph absolute top-4 left-6 text-9xl">
@@ -827,8 +962,8 @@ const Testimonials = () => {
                                 <p className="relative font-display text-2xl lg:text-3xl text-white leading-snug pt-6">
                                     {q.q}
                                 </p>
-                                <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
-                                    <span className="font-mono text-xs tracking-[0.22em] text-[var(--pb-blue-bright)] uppercase">
+                                <div className="mt-7 lg:mt-8 pt-5 lg:pt-6 border-t border-white/10 flex items-center justify-between">
+                                    <span className="font-mono text-[10px] lg:text-xs tracking-[0.22em] text-[var(--pb-blue-bright)] uppercase">
                                         {q.role}
                                     </span>
                                     <span className="flex gap-0.5">
@@ -850,10 +985,9 @@ const Testimonials = () => {
                 </div>
 
                 <Reveal delay={500}>
-                    <div className="mt-16 text-center">
+                    <div className="mt-12 lg:mt-16 text-center">
                         <p className="font-display-italic text-2xl lg:text-3xl text-[var(--pb-grey)] max-w-3xl mx-auto">
-                            Once crews switch, they don't go back to disposable
-                            bags.
+                            Once crews switch to Pak Buddy, they don't go back.
                         </p>
                     </div>
                 </Reveal>
@@ -862,41 +996,38 @@ const Testimonials = () => {
     );
 };
 
-/* ---------- SUSTAINABILITY ---------- */
-
+/* ---------- SUSTAINABILITY (with Angelica) ---------- */
 const Sustainability = () => {
     return (
         <section
             data-testid="sustainability-section"
-            className="relative py-24 lg:py-36 bg-[var(--pb-ink)] overflow-hidden"
+            className="relative py-20 lg:py-36 bg-[var(--pb-ink)] overflow-hidden"
         >
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12">
                 <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
                     <Reveal className="lg:col-span-6">
-                        <span className="eyebrow">
-                            § 06 — Sustainability
-                        </span>
-                        <h2 className="font-display mt-6 text-5xl lg:text-7xl xl:text-[88px] text-white leading-[0.92]">
-                            Less waste.{" "}
+                        <span className="eyebrow">§ 06 — Sustainability</span>
+                        <h2 className="font-display mt-6 text-[44px] sm:text-5xl lg:text-7xl xl:text-[88px] text-white leading-[0.92]">
+                            Pak Buddy: less waste.{" "}
                             <span className="font-display-italic text-[var(--pb-blue-bright)]">
                                 Smarter
                             </span>{" "}
                             operation.
                         </h2>
-                        <p className="mt-8 text-xl text-[var(--pb-grey)] leading-relaxed max-w-xl">
+                        <p className="mt-7 lg:mt-8 text-lg lg:text-xl text-[var(--pb-grey)] leading-relaxed max-w-xl">
                             Disposable bags get used once — and thrown away.
                             Multiply that across your crews, every day.
                         </p>
-                        <p className="mt-4 text-xl text-[var(--pb-cream)] leading-relaxed max-w-xl">
+                        <p className="mt-4 text-lg lg:text-xl text-[var(--pb-cream)] leading-relaxed max-w-xl">
                             Pak Buddy replaces that with a reusable system that
                             cuts down on daily waste and keeps bags out of the
                             landfill.
                         </p>
 
-                        <div className="mt-10 grid sm:grid-cols-3 gap-6">
+                        <div className="mt-10 grid sm:grid-cols-3 gap-5 lg:gap-6">
                             {[
                                 { n: "0", label: "Daily bag disposal" },
-                                { n: "∞", label: "Reuses per bag" },
+                                { n: "∞", label: "Reuses per Pak Buddy" },
                                 { n: "1", label: "Smarter operation" },
                             ].map((s, i) => (
                                 <div
@@ -904,7 +1035,7 @@ const Sustainability = () => {
                                     className="border-t border-[var(--pb-blue-bright)]/40 pt-4"
                                     data-testid={`sustain-stat-${i}`}
                                 >
-                                    <div className="font-display text-6xl text-[var(--pb-blue-bright)] counter-digit">
+                                    <div className="font-display text-5xl lg:text-6xl text-[var(--pb-blue-bright)] counter-digit">
                                         {s.n}
                                     </div>
                                     <div className="mt-2 font-mono text-[11px] tracking-[0.2em] text-[var(--pb-grey)] uppercase">
@@ -914,10 +1045,10 @@ const Sustainability = () => {
                             ))}
                         </div>
 
-                        <p className="mt-10 font-display-italic text-2xl text-white">
+                        <p className="mt-10 font-display-italic text-xl lg:text-2xl text-white">
                             Less waste. Lower cost. Same performance —{" "}
                             <span className="text-[var(--pb-blue-bright)]">
-                                actually better.
+                                actually better with Pak Buddy.
                             </span>
                         </p>
                     </Reveal>
@@ -926,13 +1057,16 @@ const Sustainability = () => {
                         <div className="relative">
                             <div className="absolute -inset-4 border border-[var(--pb-blue-bright)]/20 pointer-events-none" />
                             <img
-                                src={BAG_SIDE_BY_SIDE}
-                                alt="Pak Buddy reusable bag next to a commercial backpack vacuum"
-                                className="relative w-full aspect-[4/5] object-cover border border-white/10"
+                                src={ANGELICA_HOLDING_PAK_BUDDY}
+                                alt="Crew member smiling, holding the Pak Buddy reusable vacuum bag while wearing a backpack vacuum"
+                                className="relative w-full aspect-[4/5] object-cover bg-white border border-white/10"
                                 data-testid="sustain-image"
                             />
                             <div className="absolute top-4 left-4 bg-[var(--pb-blue)] text-[var(--pb-ink)] px-3 py-1.5 font-block text-xs tracking-widest">
                                 REUSABLE · ENDLESSLY
+                            </div>
+                            <div className="absolute bottom-4 right-4 bg-[var(--pb-ink)] text-[var(--pb-blue-bright)] px-3 py-1.5 font-block text-xs tracking-widest border border-[var(--pb-blue-bright)]/40">
+                                ◢ MEET PAK BUDDY
                             </div>
                         </div>
                     </Reveal>
@@ -942,13 +1076,332 @@ const Sustainability = () => {
     );
 };
 
-/* ---------- FINAL CTA ---------- */
+/* ---------- FAQ ---------- */
+const FAQ = () => {
+    const items = [
+        {
+            q: "What backpack vacuums does Pak Buddy fit?",
+            a: "Pak Buddy is engineered for commercial backpack vacuums — including popular ProTeam, Hoover, Sanitaire, and similar models. If you're outfitting a fleet, drop us a note in the form below and we'll confirm fit for your specific machine.",
+        },
+        {
+            q: "How does Pak Buddy maintain suction better than disposable bags?",
+            a: "Pak Buddy's patented 2-chamber design separates debris from the air path. Disposable bags choke off airflow as they fill — Pak Buddy keeps the airway open, so suction stays consistent from start to finish.",
+        },
+        {
+            q: "Is Pak Buddy actually reusable? How do I clean it?",
+            a: "Yes — Pak Buddy is fully reusable. Empty the debris into your job-site bin, give it a quick shake, and it's ready for the next run. Built with durable, high-flow material designed for repeated job-site use.",
+        },
+        {
+            q: "How much money does Pak Buddy save?",
+            a: "Disposable bags run $10–$20 each. A single crew burning through a few bags per week adds up to hundreds of dollars per machine, per year. Most customers report Pak Buddy paying for itself almost immediately.",
+        },
+        {
+            q: "Will Pak Buddy actually extend the life of my vacuum?",
+            a: "Restricted airflow forces the motor to work harder, run hotter, and fail sooner. By keeping airflow open, Pak Buddy reduces motor strain and helps protect the investment you made in your professional equipment.",
+        },
+        {
+            q: "Do you offer fleet pricing?",
+            a: "Yes. If you're outfitting multiple crews or running a multi-site operation, use the fleet inquiry form below — we'll get back to you with bulk pricing and rollout details.",
+        },
+    ];
+    return (
+        <section
+            id="faq"
+            data-testid="faq-section"
+            className="relative py-20 lg:py-36 bg-[var(--pb-ink-2)] overflow-hidden"
+        >
+            <div className="max-w-[1100px] mx-auto px-5 lg:px-12">
+                <Reveal>
+                    <div className="text-center mb-12 lg:mb-16">
+                        <span className="eyebrow inline-flex">
+                            § 07 — Pak Buddy FAQ
+                        </span>
+                        <h2 className="font-display mt-6 text-[44px] sm:text-5xl lg:text-7xl text-white leading-[0.92]">
+                            Questions, asked &{" "}
+                            <span className="font-display-italic text-[var(--pb-blue-bright)]">
+                                answered
+                            </span>
+                            .
+                        </h2>
+                    </div>
+                </Reveal>
 
+                <Reveal delay={150}>
+                    <Accordion
+                        type="single"
+                        collapsible
+                        className="w-full divide-y divide-white/10 border-t border-b border-white/10"
+                        data-testid="faq-accordion"
+                    >
+                        {items.map((it, i) => (
+                            <AccordionItem
+                                key={i}
+                                value={`item-${i}`}
+                                className="border-b-0"
+                                data-testid={`faq-item-${i}`}
+                            >
+                                <AccordionTrigger className="py-6 text-left font-display text-xl lg:text-2xl text-white hover:text-[var(--pb-blue-bright)] hover:no-underline">
+                                    <span className="flex items-baseline gap-4">
+                                        <span className="font-mono text-xs text-[var(--pb-blue-bright)] tracking-widest">
+                                            {String(i + 1).padStart(2, "0")}
+                                        </span>
+                                        <span>{it.q}</span>
+                                    </span>
+                                </AccordionTrigger>
+                                <AccordionContent className="pb-6 pl-12 text-base lg:text-lg text-[var(--pb-grey)] leading-relaxed">
+                                    {it.a}
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                </Reveal>
+            </div>
+        </section>
+    );
+};
+
+/* ---------- FLEET INQUIRY FORM ---------- */
+const FleetInquiry = () => {
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        company: "",
+        crews: "",
+        message: "",
+    });
+    const [submitting, setSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        if (!form.name.trim() || !form.email.trim()) {
+            toast.error("Please add your name and email so we can reply.");
+            return;
+        }
+        setSubmitting(true);
+        try {
+            await axios.post(`${API}/fleet-inquiry`, form);
+            setSubmitted(true);
+            toast.success("Thanks — we'll be in touch about your fleet.");
+            setForm({
+                name: "",
+                email: "",
+                company: "",
+                crews: "",
+                message: "",
+            });
+        } catch (err) {
+            const msg =
+                err?.response?.data?.detail?.[0]?.msg ||
+                err?.response?.data?.detail ||
+                "Something went wrong. Please try again.";
+            toast.error(typeof msg === "string" ? msg : "Submission failed.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <section
+            id="fleet"
+            data-testid="fleet-section"
+            className="relative py-20 lg:py-36 bg-[var(--pb-ink)] overflow-hidden"
+        >
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[var(--pb-blue-deep)]/15 blur-[140px] pointer-events-none" />
+            <div className="max-w-[1200px] mx-auto px-5 lg:px-12 relative">
+                <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+                    <Reveal className="lg:col-span-5">
+                        <span className="eyebrow">
+                            § 08 — Fleet & bulk inquiry
+                        </span>
+                        <h2 className="font-display mt-6 text-[40px] sm:text-5xl lg:text-6xl text-white leading-[0.95]">
+                            Outfitting a{" "}
+                            <span className="font-display-italic text-[var(--pb-blue-bright)]">
+                                fleet
+                            </span>{" "}
+                            with Pak Buddy?
+                        </h2>
+                        <p className="mt-6 text-lg text-[var(--pb-grey)] leading-relaxed max-w-md">
+                            If you're rolling out Pak Buddy across multiple
+                            crews or sites, drop us your details and we'll
+                            follow up with bulk pricing, fit confirmation, and
+                            rollout support.
+                        </p>
+                        <div className="mt-8 flex items-start gap-4 p-5 border border-[var(--pb-blue-bright)]/30 bg-[var(--pb-blue)]/5">
+                            <Truck className="w-6 h-6 text-[var(--pb-blue-bright)] shrink-0 mt-0.5" />
+                            <div>
+                                <div className="font-block text-sm text-white">
+                                    Bulk + fleet pricing
+                                </div>
+                                <div className="mt-1 font-mono text-[11px] tracking-widest text-[var(--pb-grey)] uppercase">
+                                    For 5+ Pak Buddy units
+                                </div>
+                            </div>
+                        </div>
+                    </Reveal>
+
+                    <Reveal delay={200} className="lg:col-span-7 w-full">
+                        {submitted ? (
+                            <div
+                                className="p-10 lg:p-14 border border-[var(--pb-blue-bright)]/40 bg-[var(--pb-ink-2)] text-center"
+                                data-testid="fleet-success"
+                            >
+                                <CheckCircle2 className="w-12 h-12 text-[var(--pb-blue-bright)] mx-auto" />
+                                <h3 className="mt-5 font-display text-3xl lg:text-4xl text-white">
+                                    Message received.
+                                </h3>
+                                <p className="mt-3 text-[var(--pb-grey)]">
+                                    Thanks — we'll be in touch shortly with
+                                    Pak Buddy fleet details.
+                                </p>
+                                <button
+                                    onClick={() => setSubmitted(false)}
+                                    className="mt-7 pb-btn-ghost"
+                                    data-testid="fleet-reset"
+                                >
+                                    Submit another inquiry
+                                </button>
+                            </div>
+                        ) : (
+                            <form
+                                onSubmit={onSubmit}
+                                className="p-7 lg:p-10 border border-white/10 bg-[var(--pb-ink-2)] space-y-5"
+                                data-testid="fleet-form"
+                            >
+                                <div className="grid sm:grid-cols-2 gap-5">
+                                    <Field
+                                        label="Your name"
+                                        name="name"
+                                        value={form.name}
+                                        onChange={(v) =>
+                                            setForm({ ...form, name: v })
+                                        }
+                                        required
+                                        testId="fleet-name"
+                                    />
+                                    <Field
+                                        label="Email"
+                                        name="email"
+                                        type="email"
+                                        value={form.email}
+                                        onChange={(v) =>
+                                            setForm({ ...form, email: v })
+                                        }
+                                        required
+                                        testId="fleet-email"
+                                    />
+                                </div>
+                                <div className="grid sm:grid-cols-2 gap-5">
+                                    <Field
+                                        label="Company"
+                                        name="company"
+                                        value={form.company}
+                                        onChange={(v) =>
+                                            setForm({ ...form, company: v })
+                                        }
+                                        testId="fleet-company"
+                                    />
+                                    <Field
+                                        label="# of crews / units"
+                                        name="crews"
+                                        value={form.crews}
+                                        onChange={(v) =>
+                                            setForm({ ...form, crews: v })
+                                        }
+                                        placeholder="e.g. 12 crews"
+                                        testId="fleet-crews"
+                                    />
+                                </div>
+                                <Field
+                                    label="Anything we should know?"
+                                    name="message"
+                                    value={form.message}
+                                    onChange={(v) =>
+                                        setForm({ ...form, message: v })
+                                    }
+                                    multiline
+                                    placeholder="Backpack vacuum models, timeline, etc."
+                                    testId="fleet-message"
+                                />
+                                <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                                    <p className="font-mono text-[10px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
+                                        We reply within 1 business day
+                                    </p>
+                                    <button
+                                        type="submit"
+                                        className="pb-btn"
+                                        disabled={submitting}
+                                        data-testid="fleet-submit"
+                                    >
+                                        <span>
+                                            {submitting
+                                                ? "Sending…"
+                                                : "Send fleet inquiry"}
+                                        </span>
+                                        <Send className="w-5 h-5" strokeWidth={2.5} />
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    </Reveal>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const Field = ({
+    label,
+    name,
+    type = "text",
+    value,
+    onChange,
+    required,
+    placeholder,
+    multiline,
+    testId,
+}) => {
+    const base =
+        "w-full bg-[var(--pb-ink)] border border-white/15 px-4 py-3 text-white placeholder:text-[var(--pb-grey-2)] focus:outline-none focus:border-[var(--pb-blue-bright)] transition";
+    return (
+        <label className="block">
+            <span className="font-mono text-[10px] tracking-[0.22em] text-[var(--pb-blue-bright)] uppercase block mb-2">
+                {label}
+                {required ? " *" : ""}
+            </span>
+            {multiline ? (
+                <textarea
+                    name={name}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    rows={4}
+                    required={required}
+                    placeholder={placeholder}
+                    className={base}
+                    data-testid={testId}
+                />
+            ) : (
+                <input
+                    name={name}
+                    type={type}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    required={required}
+                    placeholder={placeholder}
+                    className={base}
+                    data-testid={testId}
+                />
+            )}
+        </label>
+    );
+};
+
+/* ---------- FINAL CTA ---------- */
 const FinalCTA = () => {
     return (
         <section
             data-testid="final-cta-section"
-            className="relative py-28 lg:py-40 overflow-hidden grain"
+            className="relative py-24 lg:py-40 overflow-hidden grain"
             style={{
                 background:
                     "radial-gradient(ellipse at center, var(--pb-ink-3) 0%, var(--pb-ink) 70%)",
@@ -957,28 +1410,28 @@ const FinalCTA = () => {
             <div className="absolute inset-0 blueprint-grid opacity-40 pointer-events-none" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[var(--pb-blue)]/20 blur-[140px] pointer-events-none" />
 
-            <div className="max-w-[1200px] mx-auto px-6 lg:px-12 relative text-center">
+            <div className="max-w-[1200px] mx-auto px-5 lg:px-12 relative text-center">
                 <Reveal>
-                    <span className="eyebrow justify-center flex">
-                        § 07 — Upgrade
+                    <span className="eyebrow inline-flex">
+                        § 09 — Upgrade
                     </span>
                 </Reveal>
                 <Reveal delay={120}>
-                    <h2 className="font-display mt-8 text-6xl lg:text-8xl xl:text-[120px] text-white leading-[0.9]">
+                    <h2 className="font-display mt-7 lg:mt-8 text-[56px] sm:text-7xl lg:text-8xl xl:text-[120px] text-white leading-[0.9]">
                         Stop replacing bags.{" "}
                         <span className="font-display-italic text-[var(--pb-blue-bright)]">
                             Upgrade
                         </span>{" "}
-                        your system.
+                        to Pak Buddy.
                     </h2>
                 </Reveal>
                 <Reveal delay={240}>
-                    <p className="mt-8 text-xl lg:text-2xl text-[var(--pb-grey)] max-w-2xl mx-auto">
+                    <p className="mt-7 lg:mt-8 text-lg lg:text-2xl text-[var(--pb-grey)] max-w-2xl mx-auto">
                         Reusable. More efficient. Built for real job sites.
                     </p>
                 </Reveal>
                 <Reveal delay={360}>
-                    <div className="mt-12 flex flex-wrap gap-5 justify-center">
+                    <div className="mt-10 lg:mt-12 flex flex-wrap gap-5 justify-center">
                         <CTAButton testId="final-cta-primary">
                             Get Pak Buddy
                         </CTAButton>
@@ -993,23 +1446,23 @@ const FinalCTA = () => {
                 </Reveal>
 
                 <Reveal delay={500}>
-                    <div className="mt-20 pt-12 border-t border-white/10 grid md:grid-cols-2 gap-10 text-left max-w-4xl mx-auto">
+                    <div className="mt-16 lg:mt-20 pt-10 lg:pt-12 border-t border-white/10 grid md:grid-cols-2 gap-8 lg:gap-10 text-left max-w-4xl mx-auto">
                         <div>
                             <div className="eyebrow mb-4">
                                 For working crews
                             </div>
-                            <p className="font-display text-3xl text-white leading-tight">
-                                Used by contractors who want better performance
-                                and lower operating costs.
+                            <p className="font-display text-2xl lg:text-3xl text-white leading-tight">
+                                Pak Buddy is used by contractors who want
+                                better performance and lower operating costs.
                             </p>
                         </div>
                         <div>
                             <div className="eyebrow mb-4">
                                 Protect your investment
                             </div>
-                            <p className="font-display text-3xl text-white leading-tight">
-                                You invested in professional machines. Pak Buddy
-                                keeps them running at{" "}
+                            <p className="font-display text-2xl lg:text-3xl text-white leading-tight">
+                                You invested in professional machines. Pak
+                                Buddy keeps them running at{" "}
                                 <span className="font-display-italic text-[var(--pb-blue-bright)]">
                                     top form
                                 </span>{" "}
@@ -1024,35 +1477,36 @@ const FinalCTA = () => {
 };
 
 /* ---------- FOOTER ---------- */
-
 const Footer = () => {
     return (
         <footer
             data-testid="footer"
-            className="relative bg-[var(--pb-ink-2)] border-t border-white/10 py-14"
+            className="relative bg-[var(--pb-ink-2)] border-t border-white/10 py-12 lg:py-14 pb-28 md:pb-14"
         >
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12">
                 <div className="grid md:grid-cols-[1.2fr_1fr_1fr] gap-10 items-start">
                     <div>
                         <div className="flex items-center gap-3">
                             <img
-                                src={FLOOR_LORD_LOGO}
-                                alt="Floor Lord"
-                                className="w-12 h-12 object-contain"
+                                src={PAK_BUDDY_TEXT_LOGO}
+                                alt="Pak Buddy"
+                                className="h-10 w-auto object-contain"
                             />
-                            <div>
-                                <div className="font-block text-xl">
-                                    PAK BUDDY™
-                                </div>
-                                <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--pb-grey)] uppercase mt-1">
-                                    A Floor Lord Industries product
-                                </div>
-                            </div>
+                        </div>
+                        <div className="mt-3 flex items-center gap-2">
+                            <img
+                                src={FLOOR_LORD_LOGO}
+                                alt="Floor Lord Industries"
+                                className="w-7 h-7 object-contain"
+                            />
+                            <span className="font-mono text-[11px] tracking-[0.2em] text-[var(--pb-grey)] uppercase">
+                                A Floor Lord Industries product
+                            </span>
                         </div>
                         <p className="mt-6 text-[var(--pb-grey)] max-w-md leading-relaxed">
-                            The reusable replacement for backpack disposable
-                            vacuum bags. Engineered for commercial backpack
-                            vacuums and the crews that depend on them.
+                            Pak Buddy is the reusable replacement for backpack
+                            disposable vacuum bags. Engineered for commercial
+                            backpack vacuums and the crews that depend on them.
                         </p>
                     </div>
 
@@ -1072,7 +1526,7 @@ const Footer = () => {
                                     href="#how"
                                     className="hover:text-[var(--pb-blue-bright)] transition"
                                 >
-                                    How It Works
+                                    How Pak Buddy Works
                                 </a>
                             </li>
                             <li>
@@ -1085,10 +1539,18 @@ const Footer = () => {
                             </li>
                             <li>
                                 <a
-                                    href="#testimonials"
+                                    href="#faq"
                                     className="hover:text-[var(--pb-blue-bright)] transition"
                                 >
-                                    Reviews
+                                    FAQ
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#fleet"
+                                    className="hover:text-[var(--pb-blue-bright)] transition"
+                                >
+                                    Fleet inquiry
                                 </a>
                             </li>
                         </ul>
@@ -1097,19 +1559,19 @@ const Footer = () => {
                     <div>
                         <div className="eyebrow mb-5">Get yours</div>
                         <p className="text-[var(--pb-cream)] mb-5 leading-relaxed">
-                            Ready to upgrade your system?
+                            Ready to upgrade to Pak Buddy?
                         </p>
                         <CTAButton testId="footer-cta">Get Pak Buddy</CTAButton>
                     </div>
                 </div>
 
-                <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="font-mono text-[11px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
+                <div className="mt-12 lg:mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="font-mono text-[10px] lg:text-[11px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
                         © {new Date().getFullYear()} Floor Lord Industries ·
-                        Patented 2-chamber system
+                        Pak Buddy™ patented 2-chamber system
                     </div>
-                    <div className="font-mono text-[11px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
-                        Tough Jobs. Clean Solutions. That's my buddy.
+                    <div className="font-mono text-[10px] lg:text-[11px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
+                        Tough Jobs. Clean Solutions. That's my Pak Buddy.
                     </div>
                 </div>
             </div>
@@ -1118,7 +1580,6 @@ const Footer = () => {
 };
 
 /* ---------- APP ---------- */
-
 function App() {
     useEffect(() => {
         document.title =
@@ -1127,6 +1588,17 @@ function App() {
 
     return (
         <div className="App min-h-screen bg-[var(--pb-ink)] text-[var(--pb-cream)]">
+            <Toaster
+                theme="dark"
+                position="top-center"
+                toastOptions={{
+                    style: {
+                        background: "var(--pb-ink-2)",
+                        border: "1px solid rgba(69,164,255,0.4)",
+                        color: "var(--pb-cream)",
+                    },
+                }}
+            />
             <Nav />
             <main>
                 <Hero />
@@ -1136,9 +1608,12 @@ function App() {
                 <Benefits />
                 <Testimonials />
                 <Sustainability />
+                <FAQ />
+                <FleetInquiry />
                 <FinalCTA />
             </main>
             <Footer />
+            <StickyMobileCTA />
         </div>
     );
 }
