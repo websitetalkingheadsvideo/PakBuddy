@@ -62,6 +62,9 @@ const SMOKING_VAC =
 // Man on dusty floor questioning gesture
 const CONTRACTOR_QUESTIONING =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/kts01vet_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2005_15_11%20PM.png";
+// Full Pak Buddy logo with green mascot character holding a vacuum
+const PAK_BUDDY_FULL_LOGO =
+    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/lxr5c9ji_PakBuddy-01.png";
 // Angelica smiling, holding Pak Buddy with backpack vacuum on
 const ANGELICA_HOLDING_PAK_BUDDY =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/6ribw31r_Angelica%20with%20muk%20budddy.jpg";
@@ -919,14 +922,14 @@ const BrandStatement = () => {
                 </Reveal>
                 <Reveal delay={150}>
                     <img
-                        src={PAK_BUDDY_TEXT_LOGO}
-                        alt="Pak Buddy"
-                        className="mt-7 lg:mt-10 mx-auto w-full max-w-[280px] sm:max-w-[420px] lg:max-w-[640px] h-auto drop-shadow-[0_0_40px_rgba(69,164,255,0.35)]"
+                        src={PAK_BUDDY_FULL_LOGO}
+                        alt="Pak Buddy — full logo with mascot"
+                        className="mt-7 lg:mt-10 mx-auto w-full max-w-[320px] sm:max-w-[480px] lg:max-w-[680px] h-auto drop-shadow-[0_0_60px_rgba(69,164,255,0.35)]"
                         data-testid="brand-logo-large"
                     />
                 </Reveal>
                 <Reveal delay={300}>
-                    <p className="mt-8 lg:mt-10 font-display-italic text-2xl sm:text-3xl lg:text-4xl text-white max-w-3xl mx-auto leading-tight">
+                    <p className="mt-6 lg:mt-8 font-display-italic text-2xl sm:text-3xl lg:text-4xl text-white max-w-3xl mx-auto leading-tight">
                         One reusable bag. Endlessly used.{" "}
                         <span className="text-[var(--pb-blue-bright)]">
                             Engineered to outlast disposables — by a lot.
