@@ -407,9 +407,9 @@ const Hero = () => {
                         <Reveal delay={200}>
                             <div className="mb-6 lg:mb-8 flex items-center justify-center lg:justify-end gap-5">
                                 <img
-                                    src={PAK_BUDDY_FULL_LOGO}
-                                    alt="Pak Buddy mascot"
-                                    className="w-32 sm:w-40 lg:w-48 h-auto object-contain drop-shadow-[0_0_30px_rgba(69,164,255,0.35)] float-slow"
+                                    src={PAK_BUDDY_TEXT_LOGO}
+                                    alt="Pak Buddy"
+                                    className="w-40 sm:w-52 lg:w-64 h-auto object-contain drop-shadow-[0_0_30px_rgba(69,164,255,0.35)]"
                                     data-testid="hero-mascot-logo"
                                 />
                                 <div className="hidden sm:block text-left">
