@@ -1149,7 +1149,7 @@ const FAQ = () => {
     const items = [
         {
             q: "What backpack vacuums does Pak Buddy fit?",
-            a: "Pak Buddy is engineered for commercial backpack vacuums used by professional cleaning, restoration, and contracting crews. If you're outfitting a fleet, drop us a note in the form below and we'll confirm fit for your specific machine.",
+            a: "Pak Buddy is engineered to replace 7 1/2 in. to 9 in. disposable bags for commercial backpack vacuums used by professional cleaning, restoration, and contracting crews. If you're outfitting a fleet, drop us a note in the form below and we'll confirm fit for your specific machine.",
         },
         {
             q: "How does Pak Buddy maintain suction better than disposable bags?",
