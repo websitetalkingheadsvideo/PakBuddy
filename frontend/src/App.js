@@ -404,6 +404,28 @@ const Hero = () => {
 
                     {/* Right: 16:9 Vimeo */}
                     <div className="lg:col-span-6 relative">
+                        <Reveal delay={200}>
+                            <div className="mb-6 lg:mb-8 flex items-center justify-center lg:justify-end gap-5">
+                                <img
+                                    src={PAK_BUDDY_FULL_LOGO}
+                                    alt="Pak Buddy mascot"
+                                    className="w-32 sm:w-40 lg:w-48 h-auto object-contain drop-shadow-[0_0_30px_rgba(69,164,255,0.35)] float-slow"
+                                    data-testid="hero-mascot-logo"
+                                />
+                                <div className="hidden sm:block text-left">
+                                    <div className="eyebrow mb-2">
+                                        Meet your buddy
+                                    </div>
+                                    <p className="font-display-italic text-2xl lg:text-3xl text-white leading-tight max-w-[280px]">
+                                        Tough jobs.{" "}
+                                        <span className="text-[var(--pb-blue-bright)]">
+                                            Clean
+                                        </span>{" "}
+                                        solutions.
+                                    </p>
+                                </div>
+                            </div>
+                        </Reveal>
                         <Reveal delay={300}>
                             <div className="relative">
                                 <div className="absolute -inset-3 border border-[var(--pb-blue-bright)]/30 rounded-sm pointer-events-none" />
@@ -1456,6 +1478,138 @@ const Field = ({
     );
 };
 
+/* ---------- PAK BUDDY GALLERY (bottom showcase) ---------- */
+const PakBuddyGallery = () => {
+    return (
+        <section
+            data-testid="gallery-section"
+            className="relative py-20 lg:py-32 bg-[var(--pb-ink-2)] border-y border-white/10 overflow-hidden"
+        >
+            <div className="absolute inset-0 blueprint-grid opacity-20 pointer-events-none" />
+            <div className="max-w-[1440px] mx-auto px-5 lg:px-12 relative">
+                <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-end mb-12 lg:mb-16">
+                    <Reveal className="lg:col-span-7">
+                        <span className="eyebrow">§ 10 — Pak Buddy in the wild</span>
+                        <h2 className="font-display mt-6 text-[40px] sm:text-5xl lg:text-7xl text-white leading-[0.95]">
+                            Pak Buddy on the{" "}
+                            <span className="font-display-italic text-[var(--pb-blue-bright)]">
+                                clock
+                            </span>
+                            .
+                        </h2>
+                    </Reveal>
+                    <Reveal delay={150} className="lg:col-span-5">
+                        <p className="text-lg text-[var(--pb-grey)] leading-relaxed">
+                            Real bags, real machines, real crews. The disposable
+                            chapter is over — Pak Buddy keeps your operation
+                            moving with consistent suction, less waste, and a
+                            mascot that's not afraid of dirty work.
+                        </p>
+                    </Reveal>
+                </div>
+
+                {/* Editorial image grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-12 gap-3 lg:gap-4">
+                    {/* Comparison shot — large */}
+                    <Reveal className="col-span-2 lg:col-span-6 lg:row-span-2">
+                        <div className="relative aspect-[4/5] overflow-hidden border border-white/10 bg-white group">
+                            <img
+                                src={ANGELICA_COMPARISON}
+                                alt="Crew member holding a clean black Pak Buddy in one hand and a worn paper disposable bag in the other"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                data-testid="gallery-comparison"
+                            />
+                            <div className="absolute top-4 left-4 bg-[var(--pb-blue)] text-[var(--pb-ink)] px-3 py-1.5 font-block text-xs tracking-widest">
+                                ◢ THE COMPARISON
+                            </div>
+                            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[10px] tracking-widest text-white uppercase">
+                                <span className="bg-black/70 px-2 py-1 border border-[var(--pb-blue-bright)]/40">
+                                    Pak Buddy
+                                </span>
+                                <span className="bg-black/70 px-2 py-1 border border-red-400/40 text-red-300">
+                                    Disposable
+                                </span>
+                            </div>
+                        </div>
+                    </Reveal>
+
+                    {/* Product render */}
+                    <Reveal delay={120} className="col-span-1 lg:col-span-3">
+                        <div className="relative aspect-[4/5] overflow-hidden border border-white/10 bg-[var(--pb-ink)] group">
+                            <img
+                                src={PRODUCT_RENDER}
+                                alt="Pak Buddy 3D product render — black reusable bag with white collar"
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
+                                data-testid="gallery-product"
+                            />
+                            <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-[var(--pb-blue-bright)] uppercase bg-black/60 px-2 py-1 border border-[var(--pb-blue-bright)]/40">
+                                The product
+                            </div>
+                        </div>
+                    </Reveal>
+
+                    {/* Full logo with mascot */}
+                    <Reveal delay={200} className="col-span-1 lg:col-span-3">
+                        <div className="relative aspect-[4/5] overflow-hidden border border-[var(--pb-blue-bright)]/40 bg-gradient-to-br from-[var(--pb-ink)] to-[var(--pb-ink-3)] flex items-center justify-center p-6 lg:p-8">
+                            <img
+                                src={PAK_BUDDY_FULL_LOGO}
+                                alt="Pak Buddy full logo with green mascot character"
+                                className="w-full h-auto max-h-full object-contain drop-shadow-[0_0_30px_rgba(69,164,255,0.4)] float-slow"
+                                data-testid="gallery-logo"
+                            />
+                            <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-[var(--pb-blue-bright)] uppercase bg-black/60 px-2 py-1 border border-[var(--pb-blue-bright)]/40">
+                                The mascot
+                            </div>
+                        </div>
+                    </Reveal>
+
+                    {/* Smoking vac */}
+                    <Reveal delay={300} className="col-span-1 lg:col-span-3">
+                        <div className="relative aspect-square overflow-hidden border border-white/10 bg-black group">
+                            <img
+                                src={SMOKING_VAC}
+                                alt="Backpack vacuum smoking on a construction job site"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                data-testid="gallery-smoking"
+                            />
+                            <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-red-300 uppercase bg-black/70 px-2 py-1 border border-red-400/50">
+                                ⚠ Without Pak Buddy
+                            </div>
+                        </div>
+                    </Reveal>
+
+                    {/* Contractor questioning */}
+                    <Reveal delay={400} className="col-span-1 lg:col-span-3">
+                        <div className="relative aspect-square overflow-hidden border border-white/10 bg-white group">
+                            <img
+                                src={CONTRACTOR_QUESTIONING}
+                                alt="Contractor on a dusty floor questioning his disposable bag"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                data-testid="gallery-questioning"
+                            />
+                            <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-[var(--pb-blue-bright)] uppercase bg-black/60 px-2 py-1 border border-[var(--pb-blue-bright)]/40">
+                                "There's a better way"
+                            </div>
+                        </div>
+                    </Reveal>
+                </div>
+
+                <Reveal delay={500}>
+                    <div className="mt-12 lg:mt-14 flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-white/10">
+                        <p className="font-display-italic text-2xl lg:text-3xl text-white max-w-2xl">
+                            Stop guessing. Stop replacing.{" "}
+                            <span className="text-[var(--pb-blue-bright)]">
+                                Stick with Pak Buddy.
+                            </span>
+                        </p>
+                        <CTAButton testId="gallery-cta">Get Pak Buddy</CTAButton>
+                    </div>
+                </Reveal>
+            </div>
+        </section>
+    );
+};
+
 /* ---------- FINAL CTA ---------- */
 const FinalCTA = () => {
     return (
@@ -1673,6 +1827,7 @@ function App() {
                 <Sustainability />
                 <FAQ />
                 <FleetInquiry />
+                <PakBuddyGallery />
                 <FinalCTA />
             </main>
             <Footer />
