@@ -36,7 +36,7 @@ const API = process.env.REACT_APP_BACKEND_URL
 
 /* ---------- ASSET URLS (correctly mapped) ---------- */
 const PAK_BUDDY_TEXT_LOGO =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/aww064kz_pak_buddy_textonly.png";
+    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/nkr842hk_pak_buddy_textonlyv2.png";
 const FLOOR_LORD_LOGO =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/94ryg16v_Floor%20Lord%20Logo.png";
 const PRODUCT_RENDER =
@@ -405,22 +405,12 @@ const Hero = () => {
                     {/* Right: 16:9 Vimeo */}
                     <div className="lg:col-span-6 relative">
                         <Reveal delay={200}>
-                            <div
-                                className="relative w-full overflow-hidden mb-2 lg:mb-3 -ml-4 lg:-ml-8"
-                                style={{ height: "150px" }}
-                                data-testid="hero-mascot-logo-wrap"
-                            >
-                                <img
-                                    src={PAK_BUDDY_TEXT_LOGO}
-                                    alt="Pak Buddy"
-                                    className="absolute top-1/2 left-0 w-auto drop-shadow-[0_0_24px_rgba(69,164,255,0.35)]"
-                                    style={{
-                                        height: "560px",
-                                        transform: "translateY(-50%)",
-                                    }}
-                                    data-testid="hero-mascot-logo"
-                                />
-                            </div>
+                            <img
+                                src={PAK_BUDDY_TEXT_LOGO}
+                                alt="Pak Buddy"
+                                className="block w-full h-auto object-contain mb-4 lg:mb-6 drop-shadow-[0_0_30px_rgba(69,164,255,0.35)]"
+                                data-testid="hero-mascot-logo"
+                            />
                         </Reveal>
                         <Reveal delay={300}>
                             <div className="relative">
