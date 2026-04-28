@@ -44,7 +44,7 @@ const PRODUCT_RENDER =
 // Man walking with backpack vacuum on construction site
 const CONTRACTOR_WALKING =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/mykss7pm_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_23_57%20PM.png";
-// Man kneeling next to ProTeam Super Coach Pro 10 (paint splatter site)
+// Man kneeling next to backpack vacuum (paint splatter site)
 const CONTRACTOR_KNEELING =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/ct14px3q_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_29_13%20PM.png";
 // Frustrated kneeling on dusty floor
@@ -65,6 +65,12 @@ const CONTRACTOR_QUESTIONING =
 // Angelica smiling, holding Pak Buddy with backpack vacuum on
 const ANGELICA_HOLDING_PAK_BUDDY =
     "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/6ribw31r_Angelica%20with%20muk%20budddy.jpg";
+// Angelica frustrated, holding floppy disposable bag (cost section)
+const ANGELICA_WITH_DISPOSABLE =
+    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/ksjl7u16_Angelica%20with%20disposable.png";
+// Angelica holding both bags side-by-side for comparison
+const ANGELICA_COMPARISON =
+    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/wolwkzfm_Angelica%20with%20pak%20buddyv2%20copy.png";
 
 /* ---------- Helpers ---------- */
 const useReveal = () => {
@@ -545,16 +551,16 @@ const CostSection = () => {
                             </p>
                         </Reveal>
                         <Reveal delay={360}>
-                            <div className="mt-10 relative w-full max-w-[480px] aspect-square">
+                            <div className="mt-10 relative w-full max-w-[480px] aspect-[4/5]">
                                 <div className="absolute inset-0 rounded-full bg-red-500/15 blur-3xl" />
                                 <img
-                                    src={SMOKING_VAC}
-                                    alt="Backpack vacuum smoking on a construction job site"
-                                    className="relative w-full h-full object-cover rounded-sm border border-white/10"
+                                    src={ANGELICA_WITH_DISPOSABLE}
+                                    alt="Frustrated crew member holding a floppy, used disposable vacuum bag"
+                                    className="relative w-full h-full object-cover rounded-sm border border-white/10 bg-white"
                                     data-testid="cost-image"
                                 />
                                 <div className="absolute top-4 left-4 font-mono text-[10px] tracking-[0.25em] text-red-300 uppercase bg-black/70 px-2 py-1 border border-red-400/50">
-                                    ⚠ MOTOR FAILURE
+                                    ⚠ THE OLD WAY
                                 </div>
                                 <div className="absolute bottom-4 right-4 font-mono text-[10px] tracking-[0.25em] text-red-300 uppercase bg-black/70 px-2 py-1 border border-red-400/50">
                                     NOT USING PAK BUDDY
@@ -896,6 +902,57 @@ const Benefits = () => {
     );
 };
 
+/* ---------- BRAND STATEMENT (prominent Pak Buddy logo) ---------- */
+const BrandStatement = () => {
+    return (
+        <section
+            data-testid="brand-statement"
+            className="relative py-20 lg:py-28 bg-[var(--pb-ink)] border-y border-white/10 overflow-hidden"
+        >
+            <div className="absolute inset-0 blueprint-grid opacity-30 pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[var(--pb-blue)]/20 blur-[140px] pointer-events-none" />
+            <div className="max-w-[1200px] mx-auto px-5 lg:px-12 relative text-center">
+                <Reveal>
+                    <span className="eyebrow inline-flex">
+                        ◢ The Pak Buddy promise
+                    </span>
+                </Reveal>
+                <Reveal delay={150}>
+                    <img
+                        src={PAK_BUDDY_TEXT_LOGO}
+                        alt="Pak Buddy"
+                        className="mt-7 lg:mt-10 mx-auto w-full max-w-[280px] sm:max-w-[420px] lg:max-w-[640px] h-auto drop-shadow-[0_0_40px_rgba(69,164,255,0.35)]"
+                        data-testid="brand-logo-large"
+                    />
+                </Reveal>
+                <Reveal delay={300}>
+                    <p className="mt-8 lg:mt-10 font-display-italic text-2xl sm:text-3xl lg:text-4xl text-white max-w-3xl mx-auto leading-tight">
+                        One reusable bag. Endlessly used.{" "}
+                        <span className="text-[var(--pb-blue-bright)]">
+                            Engineered to outlast disposables — by a lot.
+                        </span>
+                    </p>
+                </Reveal>
+                <Reveal delay={450}>
+                    <div className="mt-10 flex items-center justify-center gap-3 text-[var(--pb-grey)]">
+                        <span className="font-mono text-[10px] tracking-[0.3em] uppercase">
+                            Created by
+                        </span>
+                        <img
+                            src={FLOOR_LORD_LOGO}
+                            alt="The Floor Lord"
+                            className="h-8 lg:h-10 w-auto object-contain"
+                        />
+                        <span className="font-block text-base lg:text-lg text-white tracking-tight">
+                            The Floor Lord
+                        </span>
+                    </div>
+                </Reveal>
+            </div>
+        </section>
+    );
+};
+
 /* ---------- TESTIMONIALS ---------- */
 const Testimonials = () => {
     const quotes = [
@@ -1081,7 +1138,7 @@ const FAQ = () => {
     const items = [
         {
             q: "What backpack vacuums does Pak Buddy fit?",
-            a: "Pak Buddy is engineered for commercial backpack vacuums — including popular ProTeam, Hoover, Sanitaire, and similar models. If you're outfitting a fleet, drop us a note in the form below and we'll confirm fit for your specific machine.",
+            a: "Pak Buddy is engineered for commercial backpack vacuums used by professional cleaning, restoration, and contracting crews. If you're outfitting a fleet, drop us a note in the form below and we'll confirm fit for your specific machine.",
         },
         {
             q: "How does Pak Buddy maintain suction better than disposable bags?",
@@ -1490,17 +1547,20 @@ const Footer = () => {
                             <img
                                 src={PAK_BUDDY_TEXT_LOGO}
                                 alt="Pak Buddy"
-                                className="h-10 w-auto object-contain"
+                                className="h-12 w-auto object-contain"
                             />
                         </div>
-                        <div className="mt-3 flex items-center gap-2">
+                        <div className="mt-5 inline-flex items-center gap-3 px-4 py-3 border border-white/10 bg-[var(--pb-ink)]">
+                            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[var(--pb-grey)]">
+                                Created by
+                            </span>
                             <img
                                 src={FLOOR_LORD_LOGO}
-                                alt="Floor Lord Industries"
-                                className="w-7 h-7 object-contain"
+                                alt="The Floor Lord"
+                                className="w-9 h-9 object-contain"
                             />
-                            <span className="font-mono text-[11px] tracking-[0.2em] text-[var(--pb-grey)] uppercase">
-                                A Floor Lord Industries product
+                            <span className="font-block text-base text-white tracking-tight">
+                                The Floor Lord
                             </span>
                         </div>
                         <p className="mt-6 text-[var(--pb-grey)] max-w-md leading-relaxed">
@@ -1567,8 +1627,7 @@ const Footer = () => {
 
                 <div className="mt-12 lg:mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="font-mono text-[10px] lg:text-[11px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
-                        © {new Date().getFullYear()} Floor Lord Industries ·
-                        Pak Buddy™ patented 2-chamber system
+                        © {new Date().getFullYear()} Pak Buddy™ · Created by The Floor Lord · Patented 2-chamber system
                     </div>
                     <div className="font-mono text-[10px] lg:text-[11px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
                         Tough Jobs. Clean Solutions. That's my Pak Buddy.
@@ -1606,6 +1665,7 @@ function App() {
                 <CostSection />
                 <HowItWorks />
                 <Benefits />
+                <BrandStatement />
                 <Testimonials />
                 <Sustainability />
                 <FAQ />
