@@ -28,52 +28,26 @@ import { toast, Toaster } from "sonner";
 const STORE_URL = "https://thefloorlord.com/product/pak-buddy/";
 const VIMEO_ID = "1187115103";
 const VIMEO_HASH = "5f13bd3cbe";
-const TWO_CHAMBER_VIDEO =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/01x8i0a9_2ChamberVertical.webm";
+const TWO_CHAMBER_VIDEO = "/images/2chamber.webm";
 const API = process.env.REACT_APP_BACKEND_URL
     ? `${process.env.REACT_APP_BACKEND_URL}/api`
     : "/api";
 
-/* ---------- ASSET URLS (correctly mapped) ---------- */
-const PAK_BUDDY_TEXT_LOGO =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/nkr842hk_pak_buddy_textonlyv2.png";
-const FLOOR_LORD_LOGO =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/94ryg16v_Floor%20Lord%20Logo.png";
-const PRODUCT_RENDER =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/d1z6kiiu_image.png";
-// Man walking with backpack vacuum on construction site
-const CONTRACTOR_WALKING =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/mykss7pm_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_23_57%20PM.png";
-// Man kneeling next to backpack vacuum (paint splatter site)
-const CONTRACTOR_KNEELING =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/ct14px3q_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_29_13%20PM.png";
-// Frustrated kneeling on dusty floor
-const CONTRACTOR_FRUSTRATED =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/x5fd4whr_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_35_40%20PM.png";
-// Pak Buddy bag on floor next to vacuum
-const BAG_ON_FLOOR =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/oktsl3xt_1-1.jpg";
-// Bag interior top view
-const BAG_TOP_VIEW =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/8d6uo9uj_2-1.jpg";
-// SMOKING VACUUM on construction site (correct image for cost section)
-const SMOKING_VAC =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/myrts1fu_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2004_59_20%20PM.png";
-// Man on dusty floor questioning gesture
-const CONTRACTOR_QUESTIONING =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/kts01vet_ChatGPT%20Image%20Apr%2027%2C%202026%2C%2005_15_11%20PM.png";
-// Full Pak Buddy logo with green mascot character holding a vacuum
-const PAK_BUDDY_FULL_LOGO =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/lxr5c9ji_PakBuddy-01.png";
-// Angelica smiling, holding Pak Buddy with backpack vacuum on
-const ANGELICA_HOLDING_PAK_BUDDY =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/6ribw31r_Angelica%20with%20muk%20budddy.jpg";
-// Angelica frustrated, holding floppy disposable bag (cost section)
-const ANGELICA_WITH_DISPOSABLE =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/ksjl7u16_Angelica%20with%20disposable.png";
-// Angelica holding both bags side-by-side for comparison
-const ANGELICA_COMPARISON =
-    "https://customer-assets.emergentagent.com/job_vacuum-efficiency/artifacts/wolwkzfm_Angelica%20with%20pak%20buddyv2%20copy.png";
+/* ---------- ASSET URLS (locally hosted from /public/images) ---------- */
+const PAK_BUDDY_TEXT_LOGO = "/images/pakbuddy-text-logo.png";
+const FLOOR_LORD_LOGO = "/images/floor-lord-logo.png";
+const PRODUCT_RENDER = "/images/product-render.png";
+const CONTRACTOR_WALKING = "/images/contractor-walking.png";
+const CONTRACTOR_KNEELING = "/images/contractor-kneeling.png";
+const CONTRACTOR_FRUSTRATED = "/images/contractor-frustrated.png";
+const BAG_ON_FLOOR = "/images/bag-on-floor.jpg";
+const BAG_TOP_VIEW = "/images/bag-top-view.jpg";
+const SMOKING_VAC = "/images/smoking-vac.png";
+const CONTRACTOR_QUESTIONING = "/images/contractor-questioning.png";
+const PAK_BUDDY_FULL_LOGO = "/images/pakbuddy-full-logo.png";
+const ANGELICA_HOLDING_PAK_BUDDY = "/images/angelica-holding.jpg";
+const ANGELICA_WITH_DISPOSABLE = "/images/angelica-disposable.png";
+const ANGELICA_COMPARISON = "/images/angelica-comparison.png";
 
 /* ---------- Helpers ---------- */
 const useReveal = () => {
