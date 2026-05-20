@@ -1236,6 +1236,7 @@ const FleetInquiry = () => {
         company: "",
         crews: "",
         message: "",
+        website: "", // honeypot — must stay empty
     });
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -1257,6 +1258,7 @@ const FleetInquiry = () => {
                 company: "",
                 crews: "",
                 message: "",
+                website: "",
             });
         } catch (err) {
             const msg =
@@ -1333,7 +1335,7 @@ const FleetInquiry = () => {
                         ) : (
                             <form
                                 onSubmit={onSubmit}
-                                className="p-7 lg:p-10 border border-white/10 bg-[var(--pb-ink-2)] space-y-5"
+                                className="relative p-7 lg:p-10 border border-white/10 bg-[var(--pb-ink-2)] space-y-5"
                                 data-testid="fleet-form"
                             >
                                 <div className="grid sm:grid-cols-2 gap-5">
@@ -1391,6 +1393,35 @@ const FleetInquiry = () => {
                                     placeholder="Backpack vacuum models, timeline, etc."
                                     testId="fleet-message"
                                 />
+                                {/* Honeypot — visually hidden, off-screen, aria hidden. Bots fill it; humans don't. */}
+                                <div
+                                    aria-hidden="true"
+                                    style={{
+                                        position: "absolute",
+                                        left: "-10000px",
+                                        top: "auto",
+                                        width: "1px",
+                                        height: "1px",
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    <label>
+                                        Website
+                                        <input
+                                            type="text"
+                                            name="website"
+                                            tabIndex={-1}
+                                            autoComplete="off"
+                                            value={form.website}
+                                            onChange={(e) =>
+                                                setForm({
+                                                    ...form,
+                                                    website: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </label>
+                                </div>
                                 <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
                                     <p className="font-mono text-[10px] tracking-[0.22em] text-[var(--pb-grey-2)] uppercase">
                                         We reply within 1 business day
