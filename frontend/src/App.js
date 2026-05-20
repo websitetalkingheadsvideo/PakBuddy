@@ -300,7 +300,7 @@ const Hero = () => {
                                 className="eyebrow"
                                 data-testid="hero-eyebrow"
                             >
-                                Introducing Pak Buddy™ · For commercial backpack vacuums
+                                Introducing Pak Buddy™ · For commercial, industrial &amp; cordless backpack vacuums
                             </span>
                         </Reveal>
                         <Reveal delay={120}>
@@ -321,10 +321,11 @@ const Hero = () => {
                                 className="mt-6 lg:mt-8 text-lg lg:text-xl text-[var(--pb-grey)] max-w-xl leading-relaxed"
                                 data-testid="hero-subline"
                             >
-                                Pak Buddy saves you money, increases crew
-                                efficiency, and protects your equipment — one
-                                bag, endlessly reusable, engineered for real
-                                job sites.
+                                Pak Buddy is the patented reusable replacement
+                                for disposable backpack vacuum bags —
+                                engineered for commercial, industrial, and
+                                cordless backpack vacuums. Save money, increase
+                                crew efficiency, and protect your equipment.
                             </p>
                         </Reveal>
 
@@ -381,7 +382,7 @@ const Hero = () => {
                         <Reveal delay={200}>
                             <img
                                 src={PAK_BUDDY_TEXT_LOGO}
-                                alt="Pak Buddy"
+                                alt="Pak Buddy — reusable backpack vacuum bag"
                                 className="block w-full h-auto object-contain mb-4 lg:mb-6 drop-shadow-[0_0_30px_rgba(69,164,255,0.35)]"
                                 data-testid="hero-mascot-logo"
                             />
@@ -540,8 +541,9 @@ const CostSection = () => {
                                 <div className="absolute inset-0 rounded-full bg-red-500/15 blur-3xl" />
                                 <img
                                     src={ANGELICA_WITH_DISPOSABLE}
-                                    alt="Frustrated crew member holding a floppy, used disposable vacuum bag"
+                                    alt="Crew member frustrated with a worn disposable backpack vacuum bag — the cost of not using Pak Buddy"
                                     className="relative w-full h-full object-cover rounded-sm border border-white/10 bg-white"
+                                    loading="lazy"
                                     data-testid="cost-image"
                                 />
                                 <div className="absolute top-4 left-4 font-mono text-[10px] tracking-[0.25em] text-red-300 uppercase bg-black/70 px-2 py-1 border border-red-400/50">
@@ -663,6 +665,8 @@ const HowItWorks = () => {
                                     loop
                                     muted
                                     playsInline
+                                    preload="metadata"
+                                    aria-label="Pak Buddy 2-chamber airflow system demo"
                                     className="w-full h-full object-cover"
                                     data-testid="two-chamber-video"
                                 />
@@ -857,8 +861,9 @@ const Benefits = () => {
                                 <div className="mt-7 lg:mt-8 aspect-[4/3] overflow-hidden border border-white/10 bg-white">
                                     <img
                                         src={b.image}
-                                        alt={b.tag}
+                                        alt={`${b.tag} — Pak Buddy reusable backpack vacuum bag`}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        loading="lazy"
                                     />
                                 </div>
                             </div>
@@ -905,8 +910,9 @@ const BrandStatement = () => {
                 <Reveal delay={150}>
                     <img
                         src={PAK_BUDDY_FULL_LOGO}
-                        alt="Pak Buddy — full logo with mascot"
+                        alt="Pak Buddy — reusable backpack vacuum bag by The Floor Lord"
                         className="mt-7 lg:mt-10 mx-auto w-full max-w-[320px] sm:max-w-[480px] lg:max-w-[680px] h-auto drop-shadow-[0_0_60px_rgba(69,164,255,0.35)]"
+                        loading="lazy"
                         data-testid="brand-logo-large"
                     />
                 </Reveal>
@@ -916,6 +922,19 @@ const BrandStatement = () => {
                         <span className="text-[var(--pb-blue-bright)]">
                             Engineered to outlast disposables — by a lot.
                         </span>
+                    </p>
+                </Reveal>
+                <Reveal delay={400}>
+                    <p className="mt-6 text-base lg:text-lg text-[var(--pb-grey)] max-w-3xl mx-auto leading-relaxed">
+                        Pak Buddy is the reusable replacement for disposable
+                        backpack vacuum bags — built for{" "}
+                        <strong className="text-white font-semibold">
+                            commercial, industrial, and cordless backpack
+                            vacuums
+                        </strong>{" "}
+                        used by professional cleaning, restoration, and
+                        contracting crews. Replaces 7½ in. to 9 in. disposable
+                        bags.
                     </p>
                 </Reveal>
                 <Reveal delay={450}>
@@ -1100,8 +1119,9 @@ const Sustainability = () => {
                             <div className="absolute -inset-4 border border-[var(--pb-blue-bright)]/20 pointer-events-none" />
                             <img
                                 src={ANGELICA_HOLDING_PAK_BUDDY}
-                                alt="Crew member smiling, holding the Pak Buddy reusable vacuum bag while wearing a backpack vacuum"
+                                alt="Cleaning crew member smiling, holding a Pak Buddy reusable bag while wearing a commercial backpack vacuum"
                                 className="relative w-full aspect-[4/5] object-cover bg-white border border-white/10"
+                                loading="lazy"
                                 data-testid="sustain-image"
                             />
                             <div className="absolute top-4 left-4 bg-[var(--pb-blue)] text-[var(--pb-ink)] px-3 py-1.5 font-block text-xs tracking-widest">
@@ -1506,8 +1526,9 @@ const PakBuddyGallery = () => {
                         <div className="relative aspect-[4/5] overflow-hidden border border-white/10 bg-white group">
                             <img
                                 src={ANGELICA_COMPARISON}
-                                alt="Crew member holding a clean black Pak Buddy in one hand and a worn paper disposable bag in the other"
+                                alt="Reusable Pak Buddy bag vs. disposable backpack vacuum bag — side-by-side comparison"
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                loading="lazy"
                                 data-testid="gallery-comparison"
                             />
                             <div className="absolute top-4 left-4 bg-[var(--pb-blue)] text-[var(--pb-ink)] px-3 py-1.5 font-block text-xs tracking-widest">
@@ -1529,8 +1550,9 @@ const PakBuddyGallery = () => {
                         <div className="relative aspect-[4/5] overflow-hidden border border-white/10 bg-[var(--pb-ink)] group">
                             <img
                                 src={PRODUCT_RENDER}
-                                alt="Pak Buddy 3D product render — black reusable bag with white collar"
+                                alt="Pak Buddy reusable backpack vacuum bag — product render with patented 2-chamber design"
                                 className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
+                                loading="lazy"
                                 data-testid="gallery-product"
                             />
                             <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-[var(--pb-blue-bright)] uppercase bg-black/60 px-2 py-1 border border-[var(--pb-blue-bright)]/40">
@@ -1544,8 +1566,9 @@ const PakBuddyGallery = () => {
                         <div className="relative aspect-[4/5] overflow-hidden border border-[var(--pb-blue-bright)]/40 bg-gradient-to-br from-[var(--pb-ink)] to-[var(--pb-ink-3)] flex items-center justify-center p-6 lg:p-8">
                             <img
                                 src={PAK_BUDDY_FULL_LOGO}
-                                alt="Pak Buddy full logo with green mascot character"
+                                alt="Pak Buddy reusable vacuum bag — full logo with green mascot character holding a commercial backpack vacuum"
                                 className="w-full h-auto max-h-full object-contain drop-shadow-[0_0_30px_rgba(69,164,255,0.4)] float-slow"
+                                loading="lazy"
                                 data-testid="gallery-logo"
                             />
                             <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-[var(--pb-blue-bright)] uppercase bg-black/60 px-2 py-1 border border-[var(--pb-blue-bright)]/40">
@@ -1559,8 +1582,9 @@ const PakBuddyGallery = () => {
                         <div className="relative aspect-square overflow-hidden border border-white/10 bg-black group">
                             <img
                                 src={SMOKING_VAC}
-                                alt="Backpack vacuum smoking on a construction job site"
+                                alt="Industrial backpack vacuum overheating and smoking on a commercial job site — without Pak Buddy"
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                loading="lazy"
                                 data-testid="gallery-smoking"
                             />
                             <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-red-300 uppercase bg-black/70 px-2 py-1 border border-red-400/50">
@@ -1574,8 +1598,9 @@ const PakBuddyGallery = () => {
                         <div className="relative aspect-square overflow-hidden border border-white/10 bg-white group">
                             <img
                                 src={CONTRACTOR_QUESTIONING}
-                                alt="Contractor on a dusty floor questioning his disposable bag"
+                                alt="Contractor on a dusty job site questioning his disposable backpack vacuum bag — Pak Buddy is the better way"
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                loading="lazy"
                                 data-testid="gallery-questioning"
                             />
                             <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] text-[var(--pb-blue-bright)] uppercase bg-black/60 px-2 py-1 border border-[var(--pb-blue-bright)]/40">
@@ -1790,7 +1815,7 @@ const Footer = () => {
 function App() {
     useEffect(() => {
         document.title =
-            "Pak Buddy — Reusable Vacuum Bag for Commercial Backpack Vacuums";
+            "Pak Buddy™ — Reusable Bag for Commercial & Industrial Backpack Vacuums | The Floor Lord";
     }, []);
 
     return (
