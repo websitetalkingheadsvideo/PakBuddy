@@ -24,6 +24,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { toast, Toaster } from "sonner";
+import BlogStrip from "@/components/sections/BlogStrip";
 
 const STORE_URL = "https://thefloorlord.com/product/pak-buddy/";
 const VIMEO_ID = "1187115103";
@@ -1846,6 +1847,7 @@ function App() {
                 <PakBuddyGallery />
                 <FinalCTA />
             </main>
+            <BlogStrip />
             <Footer />
             <StickyMobileCTA />
         </div>

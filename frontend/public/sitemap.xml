@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-    <url>
-        <loc>https://pakbuddystore.com/</loc>
-        <changefreq>monthly</changefreq>
-        <priority>1.0</priority>
-        <image:image>
-            <image:loc>https://pakbuddystore.com/images/pakbuddy-full-logo.png</image:loc>
-            <image:title>Pak Buddy reusable backpack vacuum bag — full logo</image:title>
-            <image:caption>Pak Buddy mascot holding a commercial backpack vacuum</image:caption>
-        </image:image>
-        <image:image>
-            <image:loc>https://pakbuddystore.com/images/product-render.png</image:loc>
-            <image:title>Pak Buddy reusable vacuum bag product render</image:title>
-        </image:image>
-        <image:image>
-            <image:loc>https://pakbuddystore.com/images/angelica-comparison.png</image:loc>
-            <image:title>Pak Buddy reusable bag vs. disposable vacuum bag comparison</image:title>
-        </image:image>
-        <image:image>
-            <image:loc>https://pakbuddystore.com/images/angelica-holding.jpg</image:loc>
-            <image:title>Crew member with commercial backpack vacuum and Pak Buddy reusable bag</image:title>
-        </image:image>
-        <image:image>
-            <image:loc>https://pakbuddystore.com/images/smoking-vac.png</image:loc>
-            <image:title>Commercial backpack vacuum overheating without Pak Buddy</image:title>
-        </image:image>
-        <video:video>
-            <video:thumbnail_loc>https://pakbuddystore.com/images/pakbuddy-full-logo.png</video:thumbnail_loc>
-            <video:title>Pak Buddy — Sales Film</video:title>
-            <video:description>How Pak Buddy replaces disposable backpack vacuum bags with a patented reusable 2-chamber system for commercial, industrial, and cordless backpack vacuums.</video:description>
-            <video:player_loc>https://player.vimeo.com/video/1187115103</video:player_loc>
-            <video:family_friendly>yes</video:family_friendly>
-            <video:requires_subscription>no</video:requires_subscription>
-            <video:live>no</video:live>
-        </video:video>
-    </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://pakbuddystore.com/</loc>
+    <lastmod>2026-05-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://pakbuddystore.com/blog</loc>
+    <lastmod>2026-05-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pakbuddystore.com/#fleet</loc>
+    <lastmod>2026-05-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pakbuddystore.com/blog/reused-disposable-bags-killing-vacuum-motor</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
