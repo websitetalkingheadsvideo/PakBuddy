@@ -1,73 +1,72 @@
-# PakBuddy
+# Put PakBuddy on pakbuddystore.com
 
-Landing page and blog for **Pak Buddy** — reusable vacuum bags for commercial backpack vacuums (Floor Lord Industries).
+**Checked:** The server folder exists but is **empty**. The site cannot work until files are uploaded there. This is a first deploy, not an update.
 
-## Stack
+**Upload to (SSH):** `~/public_html/pakbuddystore.com/`  
+**URL:** https://pakbuddystore.com
 
-| Area | Tech |
-|------|------|
-| Frontend | React 19, CRA + craco, Tailwind, shadcn/ui |
-| Backend | FastAPI, SQLAlchemy (async MySQL) |
-| Content | Markdown blog → static HTML via `scripts/build-blog.js` |
+---
 
-Product notes and backlog: [`memory/PRD.md`](memory/PRD.md).
+## How you log in (SSH only)
 
-**Production:** https://pakbuddystore.com → `~/public_html/pakbuddystore.com/` on Pair. See [`memory/DEPLOY.md`](memory/DEPLOY.md).
+Already set up on your PC — not in this Git repo:
 
-## Development
+| What | Where |
+|------|--------|
+| SSH settings | `C:\Users\paris\.ssh\config` — look for `Host pair-working` |
+| Private key | `C:\Users\paris\.ssh\id_ed25519_pair` |
+| Open a shell on Pair | In any terminal: `ssh pair-working` |
 
-### Frontend
+No password file in the project — login is the key above.
 
-```bash
-cd frontend
-yarn install
-yarn start
+---
+
+## What has to happen (two steps)
+
+1. **Build** the website on your PC → creates a folder `frontend\build\` full of HTML/JS/images.  
+2. **Copy** everything inside `frontend\build\` into `~/public_html/pakbuddystore.com/` on the server (over SSH, not FileZilla).
+
+You said you don’t want to fight the terminal. **In Cursor Agent chat, type:**
+
+```text
+deploy pakbuddystore
 ```
 
-Build for production (includes blog render):
+The agent should run the build and upload for you. If it errors, paste the error back — don’t guess.
 
-```bash
-cd frontend
-yarn build:blog
+---
+
+## If you must do it yourself (copy/paste)
+
+**Build (PowerShell, once per machine):**
+
+```powershell
+cd C:\Users\paris\PakBuddy\frontend
+npm install
+$env:NODE_PATH = ".\node_modules"
+node ..\scripts\build-blog.js
+npm run build
 ```
 
-Blog only:
+**Upload (PowerShell, after build succeeds):**
 
-```bash
-cd frontend
-yarn blog:render
+```powershell
+cd C:\Users\paris\PakBuddy\frontend\build
+scp -r * pair-working:public_html/pakbuddystore.com/
 ```
 
-### Backend
+**Check on server:**
 
-```bash
-cd backend
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-# Copy and fill backend/.env (MYSQL_URL, CORS_ORIGINS, etc.)
-uvicorn server:app --reload
+```powershell
+ssh pair-working "ls public_html/pakbuddystore.com/"
 ```
 
-## Cursor
+You should see `index.html` and folders like `static` and `images`.
 
-| Folder | Use |
-|--------|-----|
-| [`.cursor/rules/`](.cursor/rules/) | Auto context (project, frontend, backend) |
-| [`.cursor/commands/`](.cursor/commands/) | Slash commands: `/next`, `/next-local` |
-| [`.cursor/prompts/`](.cursor/prompts/) | Reusable prompts (summarize chat, clarify before coding) |
-| [`.cursor/skills/`](.cursor/skills/) | Skills e.g. `connect_pair` for Pair SSH |
+Then open https://pakbuddystore.com in a browser.
 
-Index: [`.cursor/README.md`](.cursor/README.md). Open the repo root in **Cursor** so rules and `/` commands load.
+---
 
-## Git
+## Nothing else in this file on purpose
 
-Remote: `origin` → [websitetalkingheadsvideo/PakBuddy](https://github.com/websitetalkingheadsvideo/PakBuddy). Upstream (read-only): `TalkingHeadsJed/PakBuddy-`.
-
-```bash
-git status
-git pull
-git push
-```
-
-Do not commit `.env`, generated blog artifacts (`frontend/public/blog/`, `feed.xml`), or local agent config (`.gitconfig` at repo root).
+No repo map, no backlog, no editor setup. Product/deploy details for admins: `memory/DEPLOY.md` and `memory/PRD.md`.
