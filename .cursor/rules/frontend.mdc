@@ -1,0 +1,16 @@
+---
+description: React landing page and UI components
+globs:
+  - frontend/**/*
+---
+
+# Frontend (Pak Buddy)
+
+- Stack: React 19, react-scripts/craco, Tailwind 3, Radix/shadcn in `frontend/src/components/ui/`.
+- Landing sections live in `frontend/src/App.js`; section components in `frontend/src/components/sections/`.
+- Typography: Playfair Display, Archivo Black, Inter, Space Mono (see `index.css`).
+- Brand palette: blues and greys from Floor Lord logo.
+- Use existing `cn()` from `frontend/src/lib/utils.js` for class merging.
+- Blog strip: `BlogStrip.jsx`; posts built from `content/blog/*.md`.
+
+When adding UI, reuse shadcn primitives under `components/ui/` rather than new one-off styles.

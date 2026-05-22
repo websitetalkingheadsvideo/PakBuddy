@@ -11,13 +11,25 @@ dist/
 /frontend/public/feed.xml
 /frontend/public/sitemap.xml
 
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # Editor / OS
 .DS_Store
 .idea/
-.vscode/
 .env.*
 *.env
 credentials.json
 *.pem
 *.key
 .credentials
+
+# Emergent / local agent (not project config)
+.gitconfig
+.emergent/
+
+# Cursor (keep .cursor/rules/ tracked; ignore local cache)
+.cursorignore

@@ -1,0 +1,14 @@
+---
+description: FastAPI API and database
+globs:
+  - backend/**/*
+---
+
+# Backend
+
+- `backend/server.py` — FastAPI app, CORS, rate limiting, fleet inquiry endpoints.
+- Requires `MYSQL_URL`, optional `CORS_ORIGINS`, `ADMIN_TOKEN` in `backend/.env`.
+- SQLAlchemy 2 async; Pydantic models for request/response validation.
+- Raise explicit HTTP errors; avoid silent fallbacks for missing config.
+
+Run locally: `uvicorn server:app --reload` from `backend/` with venv and `.env` present.

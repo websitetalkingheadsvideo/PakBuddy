@@ -1,0 +1,21 @@
+{
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/frontend/build": true,
+    "**/frontend/public/blog": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/frontend/build": true,
+    "**/frontend/public/blog": true
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/Scripts/python.exe"
+}

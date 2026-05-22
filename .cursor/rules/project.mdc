@@ -1,0 +1,39 @@
+---
+description: PakBuddy monorepo context and conventions
+alwaysApply: true
+---
+
+# Pak Buddy
+
+Marketing site for **Pak Buddy** (reusable vacuum bag, Floor Lord Industries). Primary CTA: https://thefloorlord.com/product/pak-buddy/
+
+## Layout
+
+- `frontend/` — React 19 + CRA/craco, Tailwind, shadcn/ui. Main landing in `frontend/src/App.js`.
+- `backend/` — FastAPI + SQLAlchemy async (fleet inquiries, admin). Config via `backend/.env` (not committed).
+- `content/blog/` — Markdown posts; build with `scripts/build-blog.js` → `frontend/public/blog/`, `feed.xml`, `sitemap.xml` (generated, gitignored).
+- `memory/PRD.md` — product requirements and backlog.
+
+## Conventions
+
+- Prefer small, focused diffs. Match existing JSX/Tailwind patterns in `App.js` and `index.css`.
+- Do not commit secrets (`.env`, credentials). Do not commit generated blog output under `frontend/public/blog/`.
+- External store links: `<a href="..." target="_blank" rel="noopener noreferrer">`.
+- Run frontend from `frontend/`: `yarn start`, `yarn build`, `yarn blog:render` (Windows: set `NODE_PATH=./node_modules` if needed).
+
+## Cursor layout
+
+- `.cursor/rules/` — project rules (this file, frontend, backend)
+- `.cursor/commands/` — `/next`, `/next-local` (git workflow)
+- `.cursor/prompts/` — handover and “ask first” templates
+- `.cursor/skills/` — e.g. `connect_pair` for Pair SSH
+
+See [.cursor/README.md](mdc:.cursor/README.md).
+
+## Dev commands
+
+```bash
+cd frontend && yarn install && yarn start
+cd backend && pip install -r requirements.txt && uvicorn server:app --reload
+node scripts/build-blog.js   # from repo root, with frontend node_modules on NODE_PATH
+```

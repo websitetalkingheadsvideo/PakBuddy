@@ -1,0 +1,17 @@
+---
+description: When remote/SSH fails, assume external service issues before blaming local network
+globs:
+  - .cursor/skills/**/*
+alwaysApply: false
+---
+
+# Regression external first
+
+For **Pair SSH**, hosting, and third-party APIs:
+
+- **Connection timed out** / no TCP to port 22: default explanation is **remote reachability** (host overload, maintenance, routing)—not the user's firewall, VPN, or ISP.
+- Do **not** open with a generic "check your network" checklist unless the user says their environment changed or asks for local diagnostics.
+- **Permission denied (publickey)**: key or server account config—report exact stderr; do not dump `ssh -v` or configs unless the user requests it.
+- Suggest **retry later** or **provider status/ACC** before inventing a local root cause.
+
+Referenced by [connect_pair skill](mdc:.cursor/skills/connect_pair/SKILL.md).
