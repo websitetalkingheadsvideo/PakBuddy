@@ -62,7 +62,7 @@ Index: [`.cursor/README.md`](.cursor/README.md). Open the repo root in **Cursor*
 
 ## Git
 
-Remote: `origin` → GitHub (`TalkingHeadsJed/PakBuddy-`).
+Remote: `origin` → [websitetalkingheadsvideo/PakBuddy](https://github.com/websitetalkingheadsvideo/PakBuddy). Upstream (read-only): `TalkingHeadsJed/PakBuddy-`.
 
 ```bash
 git status
