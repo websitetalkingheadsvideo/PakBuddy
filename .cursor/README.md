@@ -26,7 +26,7 @@
 
 ## Skills
 
-- **`connect_pair`** — SSH to Pair (`ssh pair-working`). Use when deploying or shell work on Pair; not required for local React/FastAPI dev.
+- **`connect_pair`** — SSH to Pair (`ssh pair-working`). Production docroot: `~/public_html/pakbuddystore.com/`. See `memory/DEPLOY.md`.
 
 ## Prompts
 

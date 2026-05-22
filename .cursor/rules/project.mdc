@@ -13,6 +13,7 @@ Marketing site for **Pak Buddy** (reusable vacuum bag, Floor Lord Industries). P
 - `backend/` — FastAPI + SQLAlchemy async (fleet inquiries, admin). Config via `backend/.env` (not committed).
 - `content/blog/` — Markdown posts; build with `scripts/build-blog.js` → `frontend/public/blog/`, `feed.xml`, `sitemap.xml` (generated, gitignored).
 - `memory/PRD.md` — product requirements and backlog.
+- `memory/DEPLOY.md` — production docroot: `~/public_html/pakbuddystore.com/` (https://pakbuddystore.com).
 
 ## Conventions
 

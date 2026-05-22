@@ -34,6 +34,18 @@ ssh -o BatchMode=yes -o ConnectTimeout=15 pair-working "command"
 
 Remote shell may show hostname `vps798.pairvps.com`; the SSH config target remains **`pair-working`** → `working.pairserver.com`.
 
+## PakBuddy production (pakbuddystore.com)
+
+When deploying or checking live files for **this repo**:
+
+| Item | Path |
+|------|------|
+| **URL** | https://pakbuddystore.com/ |
+| **Docroot (absolute)** | `/usr/home/working/public_html/pakbuddystore.com/` |
+| **From SSH** | `cd ~/public_html/pakbuddystore.com/` |
+
+Upload target: contents of `frontend/build/` after `yarn build:blog`. Details: [memory/DEPLOY.md](mdc:memory/DEPLOY.md).
+
 ## SFTP vs SSH (do not conflate)
 
 | Purpose | User / host |

@@ -12,6 +12,8 @@ Landing page and blog for **Pak Buddy** — reusable vacuum bags for commercial 
 
 Product notes and backlog: [`memory/PRD.md`](memory/PRD.md).
 
+**Production:** https://pakbuddystore.com → `~/public_html/pakbuddystore.com/` on Pair. See [`memory/DEPLOY.md`](memory/DEPLOY.md).
+
 ## Development
 
 ### Frontend
