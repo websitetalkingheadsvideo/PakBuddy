@@ -30,9 +30,9 @@ const STORE_URL = "https://thefloorlord.com/product/pak-buddy/";
 const VIMEO_ID = "1187115103";
 const VIMEO_HASH = "5f13bd3cbe";
 const TWO_CHAMBER_VIDEO = "/images/2chamber.webm";
-const API = process.env.REACT_APP_BACKEND_URL
-    ? `${process.env.REACT_APP_BACKEND_URL}/api`
-    : "/api";
+// API is always served from the same origin (Apache reverse-proxies /api → FastAPI on 127.0.0.1:8001
+// in production; the dev preview's Kubernetes ingress does the same).
+const API = "/api";
 
 /* ---------- ASSET URLS (locally hosted from /public/images) ---------- */
 const PAK_BUDDY_TEXT_LOGO = "/images/pakbuddy-text-logo.png";

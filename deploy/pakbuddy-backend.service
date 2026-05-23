@@ -1,0 +1,38 @@
+# /etc/systemd/system/pakbuddy-backend.service
+#
+# Runs the FastAPI fleet-inquiry backend under uvicorn.
+# Adjust User, Group, and WorkingDirectory to match your VPS.
+
+[Unit]
+Description=Pak Buddy FastAPI backend (fleet inquiry + admin)
+After=network.target mysql.service mariadb.service
+
+[Service]
+Type=simple
+User=pakbuddy
+Group=pakbuddy
+WorkingDirectory=/var/www/pakbuddystore.com/backend
+EnvironmentFile=/var/www/pakbuddystore.com/backend/.env
+
+# Use the venv's python so dependencies are isolated.
+ExecStart=/var/www/pakbuddystore.com/backend/venv/bin/uvicorn server:app \
+    --host 127.0.0.1 \
+    --port 8001 \
+    --proxy-headers \
+    --forwarded-allow-ips=127.0.0.1 \
+    --no-server-header
+
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/pakbuddystore.com/backend
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

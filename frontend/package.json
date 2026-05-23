@@ -62,7 +62,7 @@
     "build": "craco build",
     "test": "craco test",
     "blog:render": "NODE_PATH=./node_modules node ../scripts/build-blog.js",
-    "build:blog": "NODE_PATH=./node_modules node ../scripts/build-blog.js && craco build"
+    "build:blog": "NODE_PATH=./node_modules node ../scripts/build-blog.js && craco build && node ../scripts/strip-platform.js"
   },
   "browserslist": {
     "production": [
